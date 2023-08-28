@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SingleObservationActivity"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/baseline_ios_share_24"/>
+    </RelativeLayout>
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profilePic"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="start"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        app:civ_border_width="2dp"
+        android:src="@drawable/image1"
+        app:civ_border_color="@color/blue"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You have seen Hummingbird"
+        android:fontFamily="@font/poppins_medium"
+        android:textSize="20sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"/>
+    <TextView
+        android:drawableLeft="@drawable/baseline_calendar_today_24"
+        android:id="@+id/tv_date_created"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:padding="5dp"
+        android:layout_marginRight="10dp"
+        android:fontFamily="@font/poppins_medium"
+        android:text="24 August 2023 16:49"
+        android:textColor="@color/grey_1"
+        android:textSize="18sp"
+        android:drawablePadding="10dp"/>
+    <TextView
+        android:drawableLeft="@drawable/baseline_location_on_24"
+        android:id="@+id/tv_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:padding="5dp"
+        android:layout_marginRight="10dp"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Pretoria, Gauteng, South Africa"
+        android:textColor="@color/blue"
+        android:textSize="18sp"
+        android:drawablePadding="10dp"/>
+    <TextView
+        android:id="@+id/tv_bird_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:padding="5dp"
+        android:layout_gravity="top"
+        android:drawableLeft="@drawable/baseline_my_location_24"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Latitude: -25.791693 / S 25° 47' 30.094\nLongitude: 28.249293 / E 28° 14' 57.454"
+        android:drawablePadding="10dp"
+        android:textColor="@color/grey_1"
+        android:textSize="17sp" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@drawable/pin"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_bird_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:layout_gravity="top"
+                android:fontFamily="@font/poppins_medium"
+                android:background="@drawable/background_details"
+                android:text="Bird Name"
+                android:textColor="@color/blue"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/tv_scientific_bird_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:layout_gravity="top"
+                android:fontFamily="@font/poppins_medium"
+                android:background="@drawable/background_details"
+                android:text="Scientific Bird Name"
+                android:textStyle="italic"
+                android:textColor="@color/grey_1"
+                android:textSize="15sp" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_bird_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="20dp"
+            android:padding="5dp"
+            android:fontFamily="@font/poppins_medium"
+            android:drawablePadding="10dp"
+            android:text="1"
+            android:textColor="@color/black"
+            android:textSize="17sp" />
+    </RelativeLayout>
+</LinearLayout>
