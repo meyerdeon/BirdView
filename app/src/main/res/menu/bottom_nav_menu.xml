@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/miEntries"
+        android:title="Home"
+        android:icon="@drawable/ic_home"/>
+
+    <item
+        android:id="@+id/miTripCards"
+        android:title="Trips Cards"
+        android:icon="@drawable/ic_trip_cards"/>
+
+    <item
+        android:id="@+id/miGraph"
+        android:title="Observations"
+        android:icon="@drawable/ic_observation"/>
+
+    <item
+        android:id="@+id/miSettings"
+        android:title="settings"
+        android:icon="@drawable/ic_settings"/>
+</menu>

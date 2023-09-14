@@ -3,9 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ObservationsActivity"
     android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    tools:context=".Observations">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -47,4 +46,5 @@
                 tools:scrollbars="vertical" />
         </ScrollView>
     </LinearLayout>
+
 </LinearLayout>
