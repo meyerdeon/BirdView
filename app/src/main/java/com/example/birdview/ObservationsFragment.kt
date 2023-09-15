@@ -7,8 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.birdview.adapters.ObservationAdapter
 
-class Observations : Fragment() {
+class ObservationsFragment : Fragment() {
     private lateinit var newRecyclerView : RecyclerView
     private lateinit var newArrayList : ArrayList<Observation>
     lateinit var imageId : Array<Int>

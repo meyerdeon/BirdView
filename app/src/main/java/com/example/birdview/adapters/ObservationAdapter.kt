@@ -1,8 +1,6 @@
-package com.example.birdview
+package com.example.birdview.adapters
 
 import android.content.Intent
-import android.transition.AutoTransition
-import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +9,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.birdview.Observation
+import com.example.birdview.R
+import com.example.birdview.SingleObservationFragment
 import com.google.android.material.imageview.ShapeableImageView
 
 class ObservationAdapter(private val clientList : ArrayList<Observation>) : RecyclerView.Adapter<ObservationAdapter.ClientViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, ViewType: Int): ClientViewHolder{
+    override fun onCreateViewHolder(parent: ViewGroup, ViewType: Int): ClientViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.observation_item_layout, parent, false)
         return ClientViewHolder(itemView)
     }
@@ -39,7 +40,7 @@ class ObservationAdapter(private val clientList : ArrayList<Observation>) : Recy
 //                holder.expandableLayout.visibility = View.GONE
 //                holder.imgExpandCollapse.setImageResource(R.drawable.baseline_expand_more_24)
 //            }
-            val intent = Intent(v.context, SingleObservationActivity::class.java)
+            val intent = Intent(v.context, SingleObservationFragment::class.java)
             v.context.startActivity(intent)
         }
         holder.birdName.text = currentItem.birdName.toString()
