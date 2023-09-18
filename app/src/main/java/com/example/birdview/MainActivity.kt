@@ -3,6 +3,7 @@ package com.example.birdview
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -33,6 +34,17 @@ class MainActivity : AppCompatActivity() {
         }
 
          */
+
+        //set bottom navigation view functionality
+        binding.bottomNavMenu.setOnItemSelectedListener {
+            when(it.itemId){
+                R.id.miHome -> replaceFragment(MapFragment())
+                R.id.miObservations -> replaceFragment(ObservationsFragment())
+                R.id.miTripCards -> replaceFragment(TripCardsFragment())
+                R.id.miSettings -> replaceFragment(SettingsFragment())
+            }
+            true
+        }
     }
 
     /*
@@ -43,4 +55,12 @@ class MainActivity : AppCompatActivity() {
     }
 
      */
+
+    fun replaceFragment(fragment: Fragment){
+        if(fragment != null){
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.map, fragment)
+            transaction.commit()
+        }
+    }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/miEntries"
+        android:id="@+id/miHome"
         android:title="Home"
         android:icon="@drawable/ic_home"/>
 
@@ -11,7 +11,7 @@
         android:icon="@drawable/ic_trip_cards"/>
 
     <item
-        android:id="@+id/miGraph"
+        android:id="@+id/miObservations"
         android:title="Observations"
         android:icon="@drawable/ic_observation"/>
 
