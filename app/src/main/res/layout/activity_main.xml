@@ -1,81 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@android:color/white">
+    android:gravity="bottom"
+    android:background="@color/white"
+    tools:context=".MainActivity">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/imageView"
+    <FrameLayout
+        android:id="@+id/map"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="fitXY"
-        android:layout_marginBottom="320dp"
-        android:src="@drawable/image1"
-        app:shapeAppearanceOverlay="@style/RoundedFamily"/>
+        android:layout_height="match_parent"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="222dp"
-        android:fontFamily="@font/poppins_medium"
-        android:text="Welcome To \n BirdView"
-        android:textColor="@color/black"
-        android:textSize="30sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="167dp"
-        android:gravity="center"
-        android:text="Embark on a journey into the captivating world of birds."
-        android:textColor="@color/black"
-        android:textSize="20sp" />
-
-    <android.widget.Button
-        android:id="@+id/btn_sign_in"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="center"
-        android:layout_marginHorizontal="40dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginBottom="94dp"
-        android:background="@drawable/shape_button_rounded"
-        android:fontFamily="@font/poppins_medium"
-        android:foreground="?attr/selectableItemBackground"
-        android:padding="13dp"
-        android:text="Sign In"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:layout_gravity="bottom"
+        android:height="40dp"
+        android:layout_marginHorizontal="5dp"
+        app:labelVisibilityMode="labeled"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/view_background_nav_bar"
+        app:itemIconSize="20dp"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
 
-    <android.widget.Button
-        android:id="@+id/btn_sign_up"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="40dp"
-        android:layout_marginBottom="20dp"
-        android:layout_gravity="center"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/white_border_rounded_button"
-        android:text="Sign Up"
-        android:padding="13dp"
-        android:fontFamily="@font/poppins_medium"
-        android:textColor="@color/blue"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textAllCaps="false"/>
-
-</RelativeLayout>
+</FrameLayout>

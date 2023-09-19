@@ -7,4 +7,9 @@
     <color name="cobalt_blue">#0047AB</color>
     <color name="light_grey">#D3D3D3</color>
     <color name="dark_grey">#5A5A5A</color>
+
+    <color name="blue_1">#0f52ba</color>
+    <color name="blue_2">#1861D1</color>
+    <color name="font_grey">#222222</color>
+    <color name="hint_color">#805A5A5A</color>
 </resources>
