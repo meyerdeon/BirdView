@@ -91,7 +91,7 @@
                 app:trackColorInactive="@color/light_grey"
                 app:trackColorActive="@color/dark_grey"
                 app:thumbRadius="20dp"
-                app:thumbColor="@color/blue"
+                app:thumbColor="@color/blue_1"
                 app:trackHeight="30dp"/>
         </LinearLayout>
 
