@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:valueFrom="0.0"
-                android:valueTo="202.0"
+                android:valueTo="200.0"
                 app:trackColorInactive="@color/light_grey"
                 app:trackColorActive="@color/dark_grey"
                 app:thumbRadius="20dp"
