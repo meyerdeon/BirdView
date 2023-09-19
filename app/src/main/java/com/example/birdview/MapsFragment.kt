@@ -27,8 +27,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
 
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLoctionProviderClient: FusedLocationProviderClient
-    private var currentLat: Double = 0.0
-    private var currentLng: Double = 0.0
+
    // private lateinit var binding: ActivityMapsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,8 +53,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
 
         fusedLoctionProviderClient = LocationServices.getFusedLocationProviderClient(this.requireActivity())
 
-
-
         return view
     }
 
@@ -73,10 +70,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
         mMap.uiSettings.isZoomControlsEnabled = true
         mMap.setOnMarkerClickListener(this)
         setUpMap()
-        // Add a marker in Sydney and move the camera
-        //val currentLocation = LatLng(currentLat, currentLng)
-        //mMap.addMarker(MarkerOptions().position(currentLocation).title("My location"))
-        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15F))
 
     }
 
