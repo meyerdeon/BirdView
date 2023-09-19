@@ -43,8 +43,8 @@ class SettingsFragment : Fragment() {
     }
 
     // clear the binding in order to avoid memory leaks
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null!!
-    }
+    //override fun onDestroyView() {
+      //  super.onDestroyView()
+      //  binding = null!!
+   // }
 }

@@ -54,6 +54,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx:22.1.2")
     implementation("com.google.firebase:firebase-database-ktx:20.2.2")
     implementation("com.google.android.gms:play-services-maps:18.1.0")
+
     testImplementation("junit:junit:4.13.2")
     implementation ("de.hdodenhof:circleimageview:3.1.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
