@@ -1,22 +1,34 @@
 package com.example.birdview
 
+import android.content.ContentProviderClient
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.tasks.Task
+
 //import com.example.birdview.databinding.ActivityMapsBinding
 
-class MapsFragment : Fragment(), OnMapReadyCallback {
+class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private lateinit var mMap: GoogleMap
+    private lateinit var fusedLoctionProviderClient: FusedLocationProviderClient
+    private var currentLat: Double = 0.0
+    private var currentLng: Double = 0.0
    // private lateinit var binding: ActivityMapsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +52,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        fusedLoctionProviderClient = LocationServices.getFusedLocationProviderClient(this.requireActivity())
+
+
+
         return view
     }
 
@@ -54,10 +70,41 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
+        mMap.uiSettings.isZoomControlsEnabled = true
+        mMap.setOnMarkerClickListener(this)
+        setUpMap()
         // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        //val currentLocation = LatLng(currentLat, currentLng)
+        //mMap.addMarker(MarkerOptions().position(currentLocation).title("My location"))
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15F))
+
     }
+
+    private fun setUpMap(){
+        if (ActivityCompat.checkSelfPermission(this.requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(this.requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this.requireActivity(),
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 101)
+            return
+        }
+
+        val location = fusedLoctionProviderClient.lastLocation
+        location.addOnSuccessListener {
+            if(it!=null){
+                val currentLatLng = LatLng(it.latitude, it.longitude)
+                placeMarkerOnMap(currentLatLng)
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15F))
+            }
+        }
+    }
+
+    private fun placeMarkerOnMap(currentLatLng: LatLng) {
+        val markerOptions = MarkerOptions().position(currentLatLng)
+        markerOptions.title("$currentLatLng")
+        mMap.addMarker(markerOptions)
+    }
+
+    override fun onMarkerClick(p0: Marker) = false
 }
