@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "328344330806",
+    "firebase_url": "https://opsc7312birdviewapp-default-rtdb.firebaseio.com",
+    "project_id": "opsc7312birdviewapp",
+    "storage_bucket": "opsc7312birdviewapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:328344330806:android:53e1d517db946608fc6e97",
+        "android_client_info": {
+          "package_name": "com.example.birdview"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJqh2lWRE-8V81PBBQzb0ccyh-urPDsxA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

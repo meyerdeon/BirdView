@@ -16,11 +16,13 @@ class SplashPageActivity : AppCompatActivity() {
         btn_sign_in.setOnClickListener(){
             val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
+            finish()
         }
 
         btn_sign_up.setOnClickListener(){
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 }

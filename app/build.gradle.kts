@@ -2,11 +2,15 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    id("com.google.gms.google-services")
 }
-
 android {
     namespace = "com.example.birdview"
     compileSdk = 33
+
+    buildFeatures {
+        viewBinding = true
+    }
 
     defaultConfig {
         applicationId = "com.example.birdview"
@@ -47,6 +51,8 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
+    implementation("com.google.firebase:firebase-auth-ktx:22.1.2")
+    implementation("com.google.firebase:firebase-database-ktx:20.2.2")
     implementation("com.google.android.gms:play-services-maps:18.1.0")
     testImplementation("junit:junit:4.13.2")
     implementation ("de.hdodenhof:circleimageview:3.1.0")

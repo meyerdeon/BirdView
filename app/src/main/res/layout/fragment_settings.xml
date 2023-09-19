@@ -91,15 +91,13 @@
                 app:trackColorInactive="@color/light_grey"
                 app:trackColorActive="@color/dark_grey"
                 app:thumbRadius="20dp"
-                app:thumbColor="@color/blue"
+                app:thumbColor="@color/blue_1"
                 app:trackHeight="30dp"/>
         </LinearLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
             <android.widget.Button
-                android:id="@+id/btn_sign_up"
+                android:layout_marginTop="60dp"
+                android:id="@+id/btn_sign_out"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="80dp"
@@ -115,7 +113,6 @@
                 android:textSize="25sp"
                 android:textStyle="bold"
                 android:textAllCaps="false"/>
-        </RelativeLayout>
     </LinearLayout>
 
 </LinearLayout>
