@@ -36,6 +36,7 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.btnSignOut.setOnClickListener(){
+            FirebaseAuth.getInstance().signOut()
             val intent = Intent(activity, SplashPageActivity::class.java)
             startActivity(intent)
         }
