@@ -2,9 +2,14 @@
 <resources>
     <style name="OutlinedRoundedBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MyApp.TextInputLayout.Rounded</item>
+        <item name="colorControlNormal">@color/dark_grey</item>
+        <item name="colorControlActivated">@color/blue_1</item>
+        <item name="android:textColorHint">@color/grey_1</item>
+        <item name="android:textColor">@color/dark_grey</item>
     </style>
 
     <style name="ShapeAppearanceOverlay.MyApp.TextInputLayout.Rounded" parent="">
+        <item name="android:textColor">@color/dark_grey</item>
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">20dp</item>
     </style>

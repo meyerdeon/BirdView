@@ -10,6 +10,8 @@
 
     <color name="blue_1">#0f52ba</color>
     <color name="blue_2">#1861D1</color>
+    <color name="blue_3">#2E7BF1</color>
+    <color name="blue_4">#408BFF</color>
     <color name="font_grey">#222222</color>
     <color name="hint_color">#805A5A5A</color>
 </resources>
