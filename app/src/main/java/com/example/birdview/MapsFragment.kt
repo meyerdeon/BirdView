@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Button
-import android.widget.NumberPicker
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -29,7 +28,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.*
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
@@ -43,7 +45,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
     private val Base_Url = "https://api.ebird.org/v2/ref/"
+    private lateinit var dbRef: DatabaseReference
 
+    var distance: Float? = null
    // private lateinit var binding: ActivityMapsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +66,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_maps, container, false)
 
+        dbRef = FirebaseDatabase.getInstance().getReference("Users")
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = childFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -78,6 +83,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
     {
         val hotspots = mutableListOf<BirdHotspot>()
 
+        var result: Response<String>
+
+
+
+
+
         val retrofitBuilder = Retrofit.Builder()
             .addConverterFactory(ScalarsConverterFactory.create())
             .baseUrl(Base_Url)
@@ -87,7 +98,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
 
         CoroutineScope(Dispatchers.Main).launch {
             if (location != null ){
-                val result = api.getHotspot("hotspot/geo?dist=10&lat=${location!!.latitude}&lng=${location!!.longitude}")
+
+                val getDistance = async{
+                    //get distance
+                    getMapRange()
+                }
+
+                result = api.getHotspot("hotspot/geo?dist=${getDistance.await()?:50}&lat=${location!!.latitude}&lng=${location!!.longitude}")
                 if (result.isSuccessful && result.body() != null){
 
                     var results = result.body().toString()
@@ -126,6 +143,37 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
         }
     }
 
+    suspend fun getMapRange(): Float{
+        var distance = 0f
+        dbRef.child(GlobalVariables.userUID).child("Settings").child("mapRangePreference").get().addOnSuccessListener {
+            Log.i("firebase", "Got value ${it.value}")
+            if (it.value != null){
+               distance = it.value.toString().toFloat()
+            }
+
+        }.addOnFailureListener{
+            Log.e("firebase", "Error getting data", it)
+        }
+
+        dbRef.child(GlobalVariables.userUID).child("Settings").child("unitMeasurement").get().addOnSuccessListener {
+            Log.i("firebase", "Got value ${it.value}")
+            if (it.exists()){
+                if (it.value!!.toString().equals("imperial")){
+                    //convert distance to imperial
+                    if (distance != null){
+                        distance = distance!!*1.60934f
+
+                    }
+
+                }
+            }
+        }.addOnFailureListener{
+            Log.e("firebase", "Error getting data", it)
+        }
+
+        delay(2000)
+        return distance
+    }
     /********************************************************************************************/
     /** implemented map members */
     /**
@@ -306,12 +354,18 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
 
         getDirections.setOnClickListener {
 
-            var uri = Uri.parse("https://www.google.com/maps/dir/$source/$destination")
+            /*var uri = Uri.parse("https://www.google.com/maps/dir/$source/$destination")
             var intent = Intent(Intent.ACTION_VIEW, uri)
             intent.setPackage("com.google.android.apps.maps")
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
+*/
 
+            val gmmIntentUri =
+                Uri.parse("google.navigation:q=${destination!!.latitude},${destination!!.longitude}")
+            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+            mapIntent.setPackage("com.google.android.apps.maps")
+            startActivity(mapIntent)
             dialog.dismiss()
         }
 

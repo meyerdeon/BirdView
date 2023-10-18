@@ -2,13 +2,17 @@ package com.example.birdview
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.birdview.databinding.ActivitySignUpBinding
 import com.example.birdview.databinding.FragmentSettingsBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -17,6 +21,7 @@ private const val ARG_PARAM2 = "param2"
 
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
+    private lateinit var dbRef: DatabaseReference
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +44,73 @@ class SettingsFragment : Fragment() {
             FirebaseAuth.getInstance().signOut()
             val intent = Intent(activity, SplashPageActivity::class.java)
             startActivity(intent)
+        }
+        dbRef = FirebaseDatabase.getInstance().getReference("Users")
+        var isImperial = false
+
+        //pull settings data from database
+        dbRef.child(GlobalVariables.userUID).child("Settings").child("unitMeasurement").get().addOnSuccessListener {
+            Log.i("firebase", "Got value ${it.value}")
+            if (it.exists()){
+                if (it.value!!.toString().equals("imperial")){
+                    isImperial = true
+                    binding.switchUnitMeasurement.isChecked = true
+                }else{
+                    binding.switchUnitMeasurement.isChecked = false
+                }
+            }else{
+                binding.switchUnitMeasurement.isChecked = false
+            }
+        }.addOnFailureListener{
+            Log.e("firebase", "Error getting data", it)
+        }
+
+        dbRef.child(GlobalVariables.userUID).child("Settings").child("mapRangePreference").get().addOnSuccessListener {
+            Log.i("firebase", "Got value ${it.value}")
+            if (it.exists()){
+                binding.discreteSlider.value = it.value.toString().toFloat()
+                binding.txtMapRangePreference.text = if (isImperial)"${it.value.toString().toFloat().toInt()}mi" else "${it.value.toString().toFloat().toInt()}km"
+            }else{
+                binding.discreteSlider.value = 50f
+                binding.txtMapRangePreference.text = "50km"
+            }
+        }.addOnFailureListener{
+            Log.e("firebase", "Error getting data", it)
+        }
+
+        //save map range preference when user decides to change
+        binding.discreteSlider.addOnChangeListener { slider, value, fromUser ->
+            dbRef.child(GlobalVariables.userUID).child("Settings").child("mapRangePreference").setValue(value)
+                .addOnFailureListener{
+                    Toast.makeText(requireContext(), "Error: ${it.message}", Toast.LENGTH_LONG
+                    ).show()
+                }
+            if (binding.switchUnitMeasurement.isChecked){
+                binding.txtMapRangePreference.text = "${value.toInt()}mi"
+            }else{
+                binding.txtMapRangePreference.text = "${value.toInt()}km"
+            }
+
+        }
+
+        //save unit measurement preference when user decides to change
+        binding.switchUnitMeasurement.setOnCheckedChangeListener { compoundButton, b ->
+            if (b){
+
+                dbRef.child(GlobalVariables.userUID).child("Settings").child("unitMeasurement").setValue("imperial")
+                    .addOnFailureListener{
+                        Toast.makeText(requireContext(), "Error: ${it.message}", Toast.LENGTH_LONG
+                        ).show()
+                    }
+                binding.txtMapRangePreference.text = binding.txtMapRangePreference.text.toString().replace("km", "mi")
+            }else{
+                dbRef.child(GlobalVariables.userUID).child("Settings").child("unitMeasurement").setValue("metric")
+                    .addOnFailureListener{
+                        Toast.makeText(requireContext(), "Error: ${it.message}", Toast.LENGTH_LONG
+                        ).show()
+                    }
+                binding.txtMapRangePreference.text = binding.txtMapRangePreference.text.toString().replace("mi", "km")
+            }
         }
     }
 
