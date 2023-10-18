@@ -1,13 +1,21 @@
 package com.example.birdview
 
 import android.Manifest
+import android.app.Dialog
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
+import android.widget.Button
+import android.widget.NumberPicker
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.example.birdview.api_interfaces.HotspotsApiInterface
 import com.example.birdview.models.BirdHotspot
@@ -17,6 +25,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -94,6 +103,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
 
                                     parts[4].toDouble(),
                                     parts[5].toDouble(),
+                                    parts[6].toString()
 
                                     )
                                 hotspots.add(apiContent)
@@ -105,7 +115,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
 
                     for (hotspot in hotspots){
                         val location = LatLng(hotspot.latitude!!.toDouble(), hotspot.longitude!!.toDouble())
-                        placeMarkerOnMap(location)
+                        placeMarkerOnMap(location, hotspot.locationName!!)
                     }
                 }else{
                     Toast.makeText(this@MapsFragment.requireContext(), "There are no bird hotspots nearby", Toast.LENGTH_SHORT).show()
@@ -130,9 +140,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
         setUpMap()
 
     }
-    private fun placeMarkerOnMap(currentLatLng: LatLng) {
+    private fun placeMarkerOnMap(currentLatLng: LatLng, locatioName: String) {
         val markerOptions = MarkerOptions().position(currentLatLng)
-        markerOptions.title("$currentLatLng")
+        markerOptions.title("$locatioName")
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
         mMap.addMarker(markerOptions)
     }
 
@@ -142,7 +153,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
         mMap.addMarker(markerOptions)
     }
 
-    override fun onMarkerClick(p0: Marker) = false
+    override fun onMarkerClick(marker: Marker): Boolean
+    {
+        showDirectionsDialog(marker.title.toString(), marker.position)
+
+        return false
+    }
 
     /********************************************************************************************/
     private fun setUpMap(){
@@ -245,6 +261,61 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
         startLocationUpdates()
     }
     /********************************************************************************************/
+
+    private fun showDirectionsDialog(place: String, destination: LatLng){
+        var source: LatLng? = null
+
+        val dialog = Dialog(requireContext())
+        dialog.show()
+        dialog.window!!.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window!!.attributes.windowAnimations = R.style.DialogAnimation
+        dialog.window!!.setGravity(Gravity.BOTTOM)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.directions_bottom_sheet_layout)
+
+        val getDirections = dialog.findViewById<Button>(R.id.btnGetDirections)
+        val locationName = dialog.findViewById<TextView>(R.id.txtLocationName)
+
+        locationName.text = place
+
+        if (place.equals("My location")){
+            getDirections.isVisible = false
+        }
+
+        if (ActivityCompat.checkSelfPermission(this.requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(this.requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this.requireActivity(),
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 101)
+            return
+        }
+
+        fusedLocationProviderClient.lastLocation
+            .addOnSuccessListener {
+                if (it != null) {
+                    source = LatLng(it.latitude, it.longitude)
+
+                }else{
+                    Toast.makeText(this.requireContext(), "Cannot get location.", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+
+
+        getDirections.setOnClickListener {
+
+            var uri = Uri.parse("https://www.google.com/maps/dir/$source/$destination")
+            var intent = Intent(Intent.ACTION_VIEW, uri)
+            intent.setPackage("com.google.android.apps.maps")
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+
+            dialog.dismiss()
+        }
+
+    }
 
 }
 

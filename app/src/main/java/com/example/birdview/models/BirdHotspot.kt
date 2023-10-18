@@ -1,6 +1,6 @@
 package com.example.birdview.models
 
-data class BirdHotspot(var latitude : Double? = null,  var longitude : Double? = null)
+data class BirdHotspot(var latitude : Double? = null,  var longitude : Double? = null, var locationName : String? = null)
 
 /*
 var regionCode : String? = null, var countryCode : String? = null, var provinceCode : String? = null,
