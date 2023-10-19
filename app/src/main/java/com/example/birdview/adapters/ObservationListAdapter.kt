@@ -45,7 +45,7 @@ class ObservationListAdapter(private val observationList : ArrayList<Observation
         }
         holder.birdComName.text = observation.birdComName.toString()
         holder.birdSciName.text = observation.birdSciName.toString()
-        holder.birdDateAdded.text = "Date Added: " + observation.dateAdded.toString()
+        holder.birdDateAdded.text = observation.dateAdded.toString()
         if(observation.birdImage?.contains("https://")!!){
             Glide.with(holder.birdImage.context)
                 .load(observation.birdImage)

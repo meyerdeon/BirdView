@@ -69,7 +69,9 @@
                         android:textSize="15sp" />
                     <TextView
                         android:id="@+id/tv_bird_date_added"
+                        android:drawableLeft="@drawable/baseline_calendar_today_24"
                         android:layout_width="wrap_content"
+                        android:drawablePadding="10dp"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
                         android:layout_marginLeft="10dp"
@@ -77,7 +79,7 @@
                         android:padding="5dp"
                         android:layout_gravity="top"
                         android:background="@drawable/background_details"
-                        android:text="Scientific Bird Name"
+                        android:text="Date Added"
                         android:textColor="@color/dark_grey"
                         android:textSize="15sp" />
                 </LinearLayout>
