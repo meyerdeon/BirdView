@@ -13,13 +13,13 @@ import com.google.android.material.shape.MaterialShapeDrawable
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
-    private fun showFullScreenDialog() {
-        replaceFragment(MapsFragment())
-        binding.bottomNavMenu.getMenu().findItem(R.id.miHome).setChecked(true);
-        val fragmentManager : FragmentManager = supportFragmentManager
-        val dialogFragment = BirdListDialogFragment(fragmentManager)
-        dialogFragment.show(fragmentManager, BirdListDialogFragment::class.java.simpleName)
-    }
+//    private fun showFullScreenDialog() {
+//        replaceFragment(MapsFragment())
+//        binding.bottomNavMenu.getMenu().findItem(R.id.miHome).setChecked(true);
+//        val fragmentManager : FragmentManager = supportFragmentManager
+//        val dialogFragment = BirdListDialogFragment(fragmentManager)
+//        dialogFragment.show(fragmentManager, BirdListDialogFragment::class.java.simpleName)
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
             true
         }
         binding.fabActionButton.setOnClickListener{
-            showFullScreenDialog()
+            replaceFragment(BirdListDialogFragment(supportFragmentManager))
         }
     }
 

@@ -5,17 +5,16 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@drawable/dialog_background_inset"
     tools:context=".BirdListDialogFragment">
 
 
-    <ImageView
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:id="@+id/img_close"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/close_icon" />
+<!--    <ImageView-->
+<!--        android:layout_width="45dp"-->
+<!--        android:layout_height="45dp"-->
+<!--        android:id="@+id/img_close"-->
+<!--        android:layout_alignParentEnd="true"-->
+<!--        android:layout_alignParentTop="true"-->
+<!--        android:src="@drawable/close_icon" />-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,8 +22,8 @@
         android:orientation="vertical"
         android:layout_marginTop="10dp">
         <LinearLayout
-            android:layout_width="260dp"
-            android:layout_height="100dp"
+            android:layout_width="340dp"
+            android:layout_height="120dp"
             android:orientation="vertical"
             android:gravity="center"
             android:background="@drawable/shape_signup_sign_in">
@@ -33,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:text="Add Sighting"
-                android:textSize="18sp"
+                android:textSize="25sp"
                 android:fontFamily="@font/poppins_medium"
                 android:textStyle="bold"
                 android:layout_gravity="center"/>

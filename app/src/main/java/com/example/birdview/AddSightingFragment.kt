@@ -1,36 +1,26 @@
 package com.example.birdview
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.birdview.adapters.BirdListAdapter
 import com.example.birdview.models.Bird
 import com.example.birdview.models.BirdWithImage
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import retrofit2.Call
 import retrofit2.Callback
@@ -81,7 +71,7 @@ data class FlickrPhoto(
     val secret: String
 )
 
-class BirdListDialogFragment(private val fragmentManager : FragmentManager) : DialogFragment() {
+class BirdListDialogFragment(private val fragmentManager : FragmentManager) : Fragment() {
     private lateinit var newRecyclerView : RecyclerView
     companion object {
         private const val REQUEST_LOCATION_PERMISSION = 101
@@ -98,16 +88,15 @@ class BirdListDialogFragment(private val fragmentManager : FragmentManager) : Di
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_bird_list_dialog, container, false)
-        if (getDialog() != null && getDialog()?.getWindow() != null) {
-            getDialog()?.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
-            getDialog()?.getWindow()?.requestFeature(Window.FEATURE_NO_TITLE)
-        }
+        val view = inflater.inflate(R.layout.fragment_add_sighting, container, false)
+//        if (getDialog() != null && getDialog()?.getWindow() != null) {
+//            getDialog()?.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+//            getDialog()?.getWindow()?.requestFeature(Window.FEATURE_NO_TITLE)
+//        }
         text = view.findViewById<TextView>(R.id.imgBird)
         prgLoad = view.findViewById(R.id.prgLoad)
         cardViewUnidentified = view.findViewById(R.id.cardViewUnidentified)
         cardViewManualEntry = view.findViewById(R.id.cardViewManualSighting)
-        val imgclose = view.findViewById<ImageView>(R.id.img_close)
         text.setText(null)
         newRecyclerView = view.findViewById(R.id.rvObservations)
         newRecyclerView.layoutManager = LinearLayoutManager(view.context)
@@ -116,9 +105,6 @@ class BirdListDialogFragment(private val fragmentManager : FragmentManager) : Di
 
         checkLocationPermissions()
 
-        imgclose.setOnClickListener(){
-            dismiss()
-        }
         cardViewUnidentified.setOnClickListener{
             val childFragment = UnidentifiedDialogFragment(currentLatLng.latitude.toString(), currentLatLng.longitude.toString())
             childFragment.show(fragmentManager, UnidentifiedDialogFragment::class.java.simpleName)
@@ -146,11 +132,11 @@ class BirdListDialogFragment(private val fragmentManager : FragmentManager) : Di
             location.addOnSuccessListener {
                 if (it != null) {
                     currentLatLng = LatLng(it.latitude, it.longitude)
-                    Toast.makeText(
-                        context,
-                        it.latitude.toString() + it.longitude.toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
+//                    Toast.makeText(
+//                        context,
+//                        it.latitude.toString() + it.longitude.toString(),
+//                        Toast.LENGTH_SHORT
+//                    ).show()
                     findBirds(it.latitude, it.longitude)
                     //       placeMarkerOnMap(currentLatLng)
                     //     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15F))
@@ -184,15 +170,15 @@ class BirdListDialogFragment(private val fragmentManager : FragmentManager) : Di
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        val dialog = dialog
-        if (dialog != null) {
-            val width = ViewGroup.LayoutParams.MATCH_PARENT
-            val height = ViewGroup.LayoutParams.MATCH_PARENT
-            dialog.window?.setLayout(width, height)
-        }
-    }
+//    override fun onStart() {
+//        super.onStart()
+//        val dialog = dialog
+//        if (dialog != null) {
+//            val width = ViewGroup.LayoutParams.MATCH_PARENT
+//            val height = ViewGroup.LayoutParams.MATCH_PARENT
+//            dialog.window?.setLayout(width, height)
+//        }
+//    }
 
     fun findBirds(latitude : Double, longitude: Double){
         val retrofit = Retrofit.Builder()
