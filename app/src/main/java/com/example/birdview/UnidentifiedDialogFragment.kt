@@ -37,15 +37,20 @@ class UnidentifiedDialogFragment(private val latitude : String, private val long
 
     private lateinit var image_bird : ImageView
     private var encodedBitmap : String? = null
+
+    override fun getTheme(): Int {
+        return R.style.AppBottomSheetDialogTheme
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_unidentified_dialog, container, false)
-//        if (getDialog() != null && getDialog()?.getWindow() != null) {
-//            getDialog()?.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
-//            getDialog()?.getWindow()?.requestFeature(Window.FEATURE_NO_TITLE)
-//        }
+        if (getDialog() != null && getDialog()?.getWindow() != null) {
+            getDialog()?.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+            getDialog()?.getWindow()?.requestFeature(Window.FEATURE_NO_TITLE)
+        }
 
         val imgTakePicture = view.findViewById<LinearLayout>(R.id.lyt_take_picture)
         val imgUploadImage = view.findViewById<LinearLayout>(R.id.lyt_upload_image)
