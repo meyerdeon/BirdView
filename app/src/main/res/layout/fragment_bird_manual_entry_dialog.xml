@@ -47,7 +47,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Take Picture"
-                        android:textSize="18dp"/>
+                        android:textColor="@color/dark_grey"
+                        android:textSize="16dp"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -65,7 +66,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Upload Image"
-                        android:textSize="18dp"/>
+                        android:textColor="@color/dark_grey"
+                        android:textSize="16dp"/>
                 </LinearLayout>
             </LinearLayout>
 
