@@ -51,7 +51,7 @@
                 android:text="Enter your name, email address and password"
                 android:textAlignment="center"
                 android:textSize="20dp"
-                android:textColor="@color/black"/>
+                android:textColor="@color/font_grey"/>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -286,7 +286,7 @@
                         android:id="@+id/tvSignIn"
                         android:layout_marginBottom="20dp"
                         android:textSize="20sp"
-                        android:textColor="@color/black"
+                        android:textColor="@color/font_grey"
                         android:text="Already have an account? Sign in"/>
                 </LinearLayout>
 
