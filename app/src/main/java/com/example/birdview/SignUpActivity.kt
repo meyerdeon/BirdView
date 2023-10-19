@@ -64,11 +64,11 @@ class SignUpActivity : AppCompatActivity() {
             })
 
             binding.btnSignUp.setOnClickListener() {
-                isAllFieldsValid = Validation.validateEmail(binding.etEmail)
-                isAllFieldsValid =  Validation.validateInput(binding.etName, "Please enter your name.")
-                isAllFieldsValid = Validation.validatePasswordSignUp(binding.etPassword)
-                isAllFieldsValid = Validation.validateConfirmPassword(binding.etPassword, binding.etConfirmPassword)
-                if(isAllFieldsValid)
+                val isEmailValid = Validation.validateEmail(binding.etEmail)
+                val isNameValid =  Validation.validateInput(binding.etName, "Please enter your name.")
+                val isPasswordValid = Validation.validatePasswordSignUp(binding.etPassword)
+                val isConfirmPasswordValid = Validation.validateConfirmPassword(binding.etPassword, binding.etConfirmPassword)
+                if(isEmailValid && isNameValid && isPasswordValid && isConfirmPasswordValid)
                 {
                     val localDate = LocalDate.now()
                     val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")

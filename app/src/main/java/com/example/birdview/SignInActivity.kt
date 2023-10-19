@@ -39,10 +39,10 @@ class SignInActivity : AppCompatActivity() {
         })
 
         binding.btnSignIn.setOnClickListener(){
-            isAllFieldsValid = Validation.validateEmail(binding.etEmail)
-            isAllFieldsValid = Validation.validatePasswordSignIn(binding.etPassword)
+            val isEmailValid = Validation.validateEmail(binding.etEmail)
+            val isPasswordValid = Validation.validatePasswordSignIn(binding.etPassword)
 
-            if(isAllFieldsValid)
+            if(isEmailValid && isPasswordValid)
             {
                 authenticateUser()
             }

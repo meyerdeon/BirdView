@@ -1,6 +1,10 @@
 package com.example.birdview.validation
 
+import android.R.attr.password
 import android.widget.EditText
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 
 class Validation {
     companion object {
@@ -18,7 +22,7 @@ class Validation {
                     etEmail.error = "Please enter a valid email address."
                     return false
                 } else {
-                    return false
+                    return true
                 }
             }
         }
@@ -43,8 +47,26 @@ class Validation {
                     return false
                 }
                 else{
-                    etPassword.error = null
-                    return true
+                    val pattern: Pattern
+                    val matcher: Matcher
+
+                    //code attribution
+                    //the following code was taken from Stack Overflow and adapted
+                    //https://stackoverflow.com/questions/23214434/regular-expression-in-android-for-password-field
+                    //Ana Laura Anguiano Cruz
+                    //https://stackoverflow.com/users/13617864/ana-laura-anguiano-cruz
+                    val passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[#,~`'!@$%^&*()_+={}|;<>.?:])(?=\\S+$).{4,}$"
+
+                    pattern = Pattern.compile(passwordPattern)
+                    matcher = pattern.matcher(etPassword.text.toString())
+                    if(matcher.matches()){
+                        etPassword.error = null
+                        return true
+                    }
+                    else{
+                        etPassword.error = "Your password needs to contain at least one special character and number."
+                        return false
+                    }
                 }
             }
         }
@@ -70,7 +92,7 @@ class Validation {
                 }
             }
             else{
-                return true
+                return false
             }
         }
     }
