@@ -22,7 +22,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="40dp"
                 android:id="@+id/img_bird"
-                android:background="@drawable/manual_entry"/>
+                android:background="@drawable/ic_manual_bird_sighting_entry"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -120,10 +120,10 @@
                 android:gravity="center">
                 <Button
                     android:id="@+id/btnAddSighting"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginRight="12dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20dp"
+                    android:textSize="16dp"
                     android:text="Add Sighting"
                     android:background="@android:color/transparent"
                     android:textColor="@color/blue_1"/>
@@ -132,10 +132,10 @@
                     android:id="@+id/btnCancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20dp"
-                    android:text="Cancel"
                     android:background="@android:color/transparent"
-                    android:textColor="@color/blue_1"/>
+                    android:text="Cancel"
+                    android:textColor="@color/blue_1"
+                    android:textSize="16dp" />
             </LinearLayout>
 
         </LinearLayout>
