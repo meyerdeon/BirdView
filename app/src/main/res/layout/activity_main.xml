@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:minHeight="60dp"
         android:layout_marginBottom="10dp"
+        app:labelVisibilityMode="labeled"
         android:layout_marginHorizontal="10dp"
         android:layout_gravity="bottom"
         android:background="@drawable/view_background_nav_bar"
