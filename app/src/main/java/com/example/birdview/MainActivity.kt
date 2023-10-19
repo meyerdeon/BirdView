@@ -38,12 +38,16 @@ class MainActivity : AppCompatActivity() {
                 R.id.miObservations -> replaceFragment(ObservationsFragment())
                 R.id.miTripCards -> replaceFragment(TripCardsFragment())
                 R.id.miSettings -> replaceFragment(SettingsFragment())
+                R.id.miAddSighting -> replaceFragment(BirdListDialogFragment(supportFragmentManager))
             }
             true
         }
-        binding.fabActionButton.setOnClickListener{
-            replaceFragment(BirdListDialogFragment(supportFragmentManager))
-        }
+//        binding.fabActionButton.setOnClickListener{
+//            for (i in 0 until binding.bottomNavMenu.menu.size()) {
+//                binding.bottomNavMenu.menu.getItem(i).isChecked = false
+//            }
+//            replaceFragment(BirdListDialogFragment(supportFragmentManager))
+//        }
     }
 
 

@@ -11,8 +11,10 @@
         android:icon="@drawable/ic_trip_cards"/>
 
     <item
-        android:id="@+id/miplaceholder"
-        android:title=""/>
+        android:id="@+id/miAddSighting"
+        android:title=""
+        android:icon="@drawable/baseline_add_box_24"
+        />
 
     <item
         android:id="@+id/miObservations"
