@@ -66,7 +66,11 @@ class BirdAddDialogFragment : BottomSheetDialogFragment() {
             btnCancel.isEnabled = false
             val user = FirebaseAuth.getInstance().currentUser
             try {
+                //code attribution
+                //the following code was taken from Stack Overflow and adapted
                 //https://stackoverflow.com/questions/53781154/kotlin-android-java-string-datetime-format-api21#:~:text=yyyy%20HH%3Amm%22)%3B%20String,%3D%20new%20SimpleDateFormat(%22dd.
+                //arifng
+                //https://stackoverflow.com/users/989643/arifng
                 val localDateTime = LocalDateTime.now()
                 val formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy HH:mm")
                 val output = localDateTime.format(formatter)

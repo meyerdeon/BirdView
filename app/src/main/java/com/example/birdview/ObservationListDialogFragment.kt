@@ -109,7 +109,11 @@ class ObservationListDialogFragment : DialogFragment() {
                                 tvBirdComName.text = "You have seen " + birdComName
                                         tvBirdSciName.text = birdSciName
                                 tvBirdLongitudeLatitude.text = "Latitude: " + latitude + " Longitude: " + longitude
+                                //code attribution
+                                //the following code was taken from Stack Overflow and adapted
                                 //https://stackoverflow.com/questions/43862079/how-to-get-city-name-using-latitude-and-longitude-in-android
+                                //PEHLAJ
+                                //https://stackoverflow.com/users/6027638/pehlaj
                                 val gcd = Geocoder(this.requireContext(), Locale.getDefault())
                                 var addresses: List<Address>? = null
                                 try {

@@ -262,11 +262,14 @@ class BirdListDialogFragment(private val fragmentManager : FragmentManager) : Fr
                                 //text.setText(imageUrl)
                                 if(count == newArrayList.size){
                                     newRecyclerView.adapter = BirdListAdapter(newArrayList, latitude.toString(), longitude.toString(), fragmentManager)
+                                    //code attribution
+                                    //the following code was taken from Stack Overflow and adapted
                                     //https://stackoverflow.com/questions/5442183/using-the-animated-circle-in-an-imageview-while-loading-stuff
+                                    //WSBT
+                                    //https://stackoverflow.com/users/1032613/wsbt
                                     prgLoad.setVisibility(View.GONE);
                                     text.setText("Click on a bird to add it to your observation list.")
                                 }
-                                // Handle each image URL here
                             }
                         }
                     }

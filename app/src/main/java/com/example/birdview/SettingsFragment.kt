@@ -23,7 +23,11 @@ class SettingsFragment : Fragment() {
 
     }
 
+    //code attribution
+    //the following code was taken from Stack Overflow and adapted
     //https://stackoverflow.com/questions/71681976/viewbinding-not-making-any-changes-inside-fragment
+    //Dannly
+    //https://stackoverflow.com/users/17518341/dannly
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
