@@ -165,7 +165,7 @@ class BirdListDialogFragment(private val fragmentManager : FragmentManager) : Fr
                 }
             }
             } else {
-                Toast.makeText(context, "Permissions denied.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Cannot get your location.", Toast.LENGTH_SHORT).show()
             }
         }
     }
