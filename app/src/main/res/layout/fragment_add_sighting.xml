@@ -53,9 +53,9 @@
                 android:orientation="horizontal"
                 android:padding="10dp">
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/manual_entry"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_manual_entry"
                     android:scaleType="fitXY"/>
                     <TextView
                         android:layout_width="wrap_content"
@@ -99,7 +99,7 @@
                         <com.google.android.material.imageview.ShapeableImageView
                             android:layout_width="100dp"
                             android:layout_height="100dp"
-                            android:src="@drawable/unknown_bird"
+                            android:src="@drawable/ic_manual_bird_sighting_entry"
                             android:scaleType="fitXY"/>
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -150,15 +150,17 @@
             android:indeterminate="true"
             android:layout_gravity="center"
             android:id="@+id/prgLoad"
-            android:indeterminateTint="#797ef6"/>
+            android:indeterminateTint="#1861D1"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/imgBird"
             android:text="Hello"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
+            android:fontFamily="@font/poppins_medium"
+            android:textFontWeight="600"
+            android:textStyle="italic"
+            android:textColor="@color/font_grey"
             android:layout_gravity="center"
             android:gravity="center"/>
         <androidx.recyclerview.widget.RecyclerView

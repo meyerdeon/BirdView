@@ -45,12 +45,13 @@
                         android:layout_marginRight="10dp"
                         android:layout_marginLeft="10dp"
                         android:gravity="center"
+                        android:fontFamily="@font/poppins_medium"
                         android:padding="5dp"
                         android:layout_gravity="top"
                         android:background="@drawable/background_details"
                         android:text="Bird Name"
                         android:textColor="@color/black"
-                        android:textSize="25sp" />
+                        android:textSize="21sp" />
 
                     <TextView
                         android:id="@+id/tv_bird_sci_name"
@@ -100,10 +101,10 @@
 
                 <ImageView
                     android:id="@+id/img_expand_collapse"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/right_arrow" />
+                    android:src="@drawable/ic_right_arrow" />
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
