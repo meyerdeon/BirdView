@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.*
@@ -36,6 +37,39 @@ import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
 //import com.example.birdview.databinding.ActivityMapsBinding
+
+/**
+ * Code attribution
+ *
+ * Some of this code was taken from Youtube
+ * https://www.youtube.com/watch?v=Iq9yQmVOThE
+ * Author: Coding Adventure
+ * https://youtube.com/@codingadventure1369
+ *
+ * Some of this code was taken from Youtube
+ * https://www.youtube.com/watch?v=yXKhU_8ujxU
+ * Author: DroidTutorials
+ * https://www.youtube.com/@droidtutorials3688
+ *
+ * Some of this code was taken from developers.google.com
+ * https://developers.google.com/maps/documentation/urls/android-intents#kotlin_12
+ * Author: Google
+ *
+ * Some of this code was taken from Youtube
+ * https://www.youtube.com/watch?v=t-3TOke8tq8
+ * Author: Philip Lackner
+ * https://www.youtube.com/@PhilippLackner
+ *
+ * Some of this code was taken from Youtube
+ * https://www.youtube.com/watch?v=5gFrXGbQsc8&list=PLklWDN5GwmGEuxBXialPT1LRzpHWZuU6P&index=2
+ * Author: Yash Nagayach
+ * https://www.youtube.com/@YashNagayachCode
+ *
+ * Some of this code was taken from Youtube
+ * https://www.youtube.com/watch?v=urLA8z6-l3k&list=PLgCYzUzKIBE-vInwQhGSdnbyJ62nixHCt&index=2
+ * Auhtor: CodingWithMitch
+ * https://www.youtube.com/@codingwithmitch
+ */
 
 class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener{
 
@@ -67,6 +101,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
         val view = inflater.inflate(R.layout.fragment_maps, container, false)
 
         dbRef = FirebaseDatabase.getInstance().getReference("Users")
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = childFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -145,7 +180,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
 
     suspend fun getMapRange(): Float{
         var distance = 0f
-        dbRef.child(GlobalVariables.userUID).child("Settings").child("mapRangePreference").get().addOnSuccessListener {
+        val user = FirebaseAuth.getInstance().currentUser
+        dbRef.child(user?.uid.toString()).child("Settings").child("mapRangePreference").get().addOnSuccessListener {
             Log.i("firebase", "Got value ${it.value}")
             if (it.value != null){
                distance = it.value.toString().toFloat()
@@ -155,7 +191,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
             Log.e("firebase", "Error getting data", it)
         }
 
-        dbRef.child(GlobalVariables.userUID).child("Settings").child("unitMeasurement").get().addOnSuccessListener {
+        dbRef.child(user?.uid.toString()).child("Settings").child("unitMeasurement").get().addOnSuccessListener {
             Log.i("firebase", "Got value ${it.value}")
             if (it.exists()){
                 if (it.value!!.toString().equals("imperial")){

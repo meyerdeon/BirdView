@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-      //  replaceFragment(MapsFragment())
+       replaceFragment(MapsFragment())
         //set bottom navigation view functionality
         binding.bottomNavMenu.setOnItemSelectedListener {
             when(it.itemId){
