@@ -61,7 +61,7 @@ class BirdLocationMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMark
             // Now you can configure the map and add a marker
             val markerOptions = MarkerOptions()
                 .position(latLng) // Replace with your latitude and longitude
-                .title("Marker Title")
+                .title("Sighting Location")
             googleMap.addMarker(markerOptions)
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15F))
         }

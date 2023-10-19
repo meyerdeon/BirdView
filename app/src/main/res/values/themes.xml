@@ -14,6 +14,7 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
+
     <style name="Theme.BirdView" parent="Base.Theme.BirdView" />
 
     <style name="NoActionBar">

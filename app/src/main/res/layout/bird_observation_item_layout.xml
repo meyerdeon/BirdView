@@ -103,7 +103,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/right_arrow" />
+                    android:src="@drawable/baseline_arrow_forward_ios_24" />
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

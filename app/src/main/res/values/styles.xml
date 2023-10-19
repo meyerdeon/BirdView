@@ -5,6 +5,7 @@
         <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
     </style>
 
+
     <style name="BottomAppBarOverlay">
         <item name="colorControlNormal">@color/blue_1</item>
         <item name="background">@color/blue_1</item>
@@ -17,17 +18,15 @@
         <item name="colorOnPrimary">#000</item>
     </style>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
-    </style>
-
     <style name="AppBottomSheetDialogTheme"
-        parent="Theme.Design.Light.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+        parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+
+        <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
     </style>
 
-    <style name="AppModalStyle"
+    <style name="CustomBottomSheetStyle"
         parent="Widget.Design.BottomSheet.Modal">
+
         <item name="android:background">@drawable/bottom_dialog_bkg</item>
     </style>
 

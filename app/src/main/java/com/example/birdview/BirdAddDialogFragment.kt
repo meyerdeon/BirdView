@@ -1,36 +1,29 @@
 package com.example.birdview
 
-import android.Manifest
-import android.app.Activity
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.provider.MediaStore
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+
+
 class BirdAddDialogFragment : BottomSheetDialogFragment() {
 
     private lateinit var image_bird : ImageView
     private var encodedBitmap : String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,10 +35,10 @@ class BirdAddDialogFragment : BottomSheetDialogFragment() {
         val comName = arguments?.getString("comName").toString()
         val sciName = arguments?.getString("sciName").toString()
 
-//        if (getDialog() != null && getDialog()?.getWindow() != null) {
-//            getDialog()?.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
-//            getDialog()?.getWindow()?.requestFeature(Window.FEATURE_NO_TITLE)
-//        }
+        if (getDialog() != null && getDialog()?.getWindow() != null) {
+            getDialog()?.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
+            getDialog()?.getWindow()?.requestFeature(Window.FEATURE_NO_TITLE)
+        }
 
         val tv_com_name = view.findViewById<TextView>(R.id.tv_bird_com_name)
         val btnOK = view.findViewById<Button>(R.id.btnOk)
@@ -102,5 +95,9 @@ class BirdAddDialogFragment : BottomSheetDialogFragment() {
             }
         }
         return view
+    }
+
+    override fun getTheme(): Int {
+        return R.style.AppBottomSheetDialogTheme
     }
 }

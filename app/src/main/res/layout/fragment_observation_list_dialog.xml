@@ -15,7 +15,7 @@
         android:id="@+id/prgLoad"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:indeterminateTint="#797ef6"/>
+        android:indeterminateTint="#1861D1"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -58,7 +58,7 @@
                     android:layout_marginTop="10dp"
                     app:civ_border_width="2dp"
                     android:src="@drawable/image1"
-                    app:civ_border_color="@color/blue"/>
+                    app:civ_border_color="#1861D1"/>
                 <TextView
                     android:id="@+id/tv_bird_com_name"
                     android:layout_width="wrap_content"

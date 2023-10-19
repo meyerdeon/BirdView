@@ -150,7 +150,7 @@
             android:indeterminate="true"
             android:layout_gravity="center"
             android:id="@+id/prgLoad"
-            android:indeterminateTint="#797ef6"/>
+            android:indeterminateTint="#1861D1"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
