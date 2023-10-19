@@ -3,10 +3,23 @@ package com.example.birdview
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.example.birdview.databinding.ActivityMainBinding
+import com.google.android.material.bottomappbar.BottomAppBar
+import com.google.android.material.shape.CornerFamily
+import com.google.android.material.shape.MaterialShapeDrawable
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+
+    private fun showFullScreenDialog() {
+        replaceFragment(MapsFragment())
+        binding.bottomNavMenu.getMenu().findItem(R.id.miHome).setChecked(true);
+        val fragmentManager : FragmentManager = supportFragmentManager
+        val dialogFragment = BirdListDialogFragment(fragmentManager)
+        dialogFragment.show(fragmentManager, BirdListDialogFragment::class.java.simpleName)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,7 +29,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        replaceFragment(MapsFragment())
+
+      //  replaceFragment(MapsFragment())
         //set bottom navigation view functionality
         binding.bottomNavMenu.setOnItemSelectedListener {
             when(it.itemId){
@@ -26,6 +40,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.miSettings -> replaceFragment(SettingsFragment())
             }
             true
+        }
+        binding.fabActionButton.setOnClickListener{
+            showFullScreenDialog()
         }
     }
 

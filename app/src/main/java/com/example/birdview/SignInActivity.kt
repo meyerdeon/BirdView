@@ -68,8 +68,9 @@ class SignInActivity : AppCompatActivity() {
                 if(it.isSuccessful){
                     // Toast.makeText(applicationContext, "Here", Toast.LENGTH_SHORT).show()
                     Toast.makeText(this, "User sign in successful.", Toast.LENGTH_SHORT).show()
-                    GlobalVariables.userUID = mAuth.currentUser?.uid.toString()
+                 //   GlobalMethods.userUID = mAuth.currentUser?.uid.toString()
                     val mainActivity = Intent(this, MainActivity::class.java)
+                   // mainActivity.putExtra("userUID",mAuth.currentUser?.uid.toString());
                     startActivity(mainActivity)
                     finish()
                 }

@@ -1,5 +1,4 @@
 package com.example.birdview
-
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -13,11 +12,6 @@ import com.example.birdview.databinding.FragmentSettingsBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- drawable is a reference to your 'real' dialog background -->
+<!-- insetRight and insetLeft add the margins -->
+<!--    https://stackoverflow.com/questions/6153489/how-to-set-margins-to-a-custom-dialog-->
+<inset
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/rounded_dialog_background"
+    android:insetRight="20dp"
+    android:insetLeft="20dp"
+    android:insetTop="20dp"
+    android:insetBottom="20dp">
+</inset>

@@ -11,8 +11,12 @@
         android:icon="@drawable/ic_trip_cards"/>
 
     <item
+        android:id="@+id/miplaceholder"
+        android:title=""/>
+
+    <item
         android:id="@+id/miObservations"
-        android:title="Observations"
+        android:title="Sightings"
         android:icon="@drawable/ic_observation"/>
 
     <item
