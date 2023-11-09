@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -84,6 +85,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
     var distance: Float? = null
    // private lateinit var binding: ActivityMapsBinding
 
+    private lateinit var btnCurrentLocation: ImageView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -100,6 +103,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_maps, container, false)
 
+        btnCurrentLocation = view.findViewById(R.id.btnCurrentLocation)
         dbRef = FirebaseDatabase.getInstance().getReference("Users")
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -110,6 +114,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.requireActivity())
 
         getLocationUpdates()
+
+        btnCurrentLocation.setOnClickListener {
+            setUpMap()
+        }
         return view
     }
 
@@ -179,7 +187,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
     }
 
     suspend fun getMapRange(): Float{
-        var distance = 0f
+        var distance = 50f //default value for map range incase user has not set their preference yet
         val user = FirebaseAuth.getInstance().currentUser
         dbRef.child(user?.uid.toString()).child("Settings").child("mapRangePreference").get().addOnSuccessListener {
             Log.i("firebase", "Got value ${it.value}")
