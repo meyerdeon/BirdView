@@ -103,6 +103,7 @@ class BirdListAdapter(private val birds: List<BirdWithImage>, private val latitu
             bundle.putString("url", bird.url)
             bundle.putString("comName", bird.comName)
             bundle.putString("sciName", bird.sciName)
+            bundle.putString("recording", bird.recording)
             childFragment.arguments = bundle
         }
 

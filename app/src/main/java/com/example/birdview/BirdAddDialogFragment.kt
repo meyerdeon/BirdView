@@ -34,6 +34,7 @@ class BirdAddDialogFragment : BottomSheetDialogFragment() {
         val url = arguments?.getString("url").toString()
         val comName = arguments?.getString("comName").toString()
         val sciName = arguments?.getString("sciName").toString()
+        val recording = arguments?.getString("recording").toString()
 
         if (getDialog() != null && getDialog()?.getWindow() != null) {
             getDialog()?.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
@@ -67,7 +68,7 @@ class BirdAddDialogFragment : BottomSheetDialogFragment() {
                 val localDateTime = LocalDateTime.now()
                 val formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy HH:mm")
                 val output = localDateTime.format(formatter)
-                val obs : Observation = Observation(null, url, comName, sciName, latitude, longitude, output)
+                val obs : Observation = Observation(null, url, comName, sciName, recording, latitude, longitude, output)
                 //GlobalVariablesMethods.user.categories?.add(cat)
                 val database = FirebaseDatabase.getInstance()
                 val databaseReference = database.getReference("Users")
