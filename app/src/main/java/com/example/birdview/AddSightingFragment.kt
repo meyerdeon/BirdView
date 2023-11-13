@@ -396,6 +396,5 @@ class BirdListDialogFragment(private val fragmentManager : FragmentManager) : Fr
 
         // Release MediaPlayer when the fragment is being destroyed
         mediaPlayer.release()
-        Toast.makeText(context, "Helo", Toast.LENGTH_SHORT).show()
     }
 }

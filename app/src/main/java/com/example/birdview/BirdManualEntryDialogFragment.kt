@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
@@ -23,6 +24,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
@@ -121,6 +123,10 @@ class BirdManualEntryDialogFragment(private val latitude : String, private val l
                         //https://stackoverflow.com/users/12746098/ashok
                         databaseReference.child(user?.uid.toString()).child("observations").push().setValue(obs).addOnCompleteListener() {
                             if (it.isComplete){
+                                btnAddSighting.isEnabled = true
+                                imgTakePicture.isEnabled = true
+                                imgUploadImage.isEnabled = true
+                                btnCancel.isEnabled = false
                                 Toast.makeText(context, "Observation added successfully.", Toast.LENGTH_SHORT).show()
                             }
                             else{
@@ -151,13 +157,21 @@ class BirdManualEntryDialogFragment(private val latitude : String, private val l
             // You can open the camera or perform any other action
         }
 
+        // Old code, not working properly anymore
+//        imgUploadImage.setOnClickListener {
+//            // Handle the "Upload Picture" option
+//            if (isReadStoragePermissionGranted()) {
+//                openImagePicker()
+//            } else {
+//                requestReadStoragePermission()
+//            }
+            // You can trigger the image selection process
+//        }
+
         imgUploadImage.setOnClickListener {
+            // Toast.makeText(context, "hello", Toast.LENGTH_SHORT).show()
             // Handle the "Upload Picture" option
-            if (isReadStoragePermissionGranted()) {
-                openImagePicker()
-            } else {
-                requestReadStoragePermission()
-            }
+            requestImagePickerPermissions()
             // You can trigger the image selection process
         }
         return view
@@ -183,44 +197,66 @@ class BirdManualEntryDialogFragment(private val latitude : String, private val l
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
     }
 
-    private fun isReadStoragePermissionGranted(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED
-    }
+    // Old code, not working properly anymore
+//    private fun isReadStoragePermissionGranted(): Boolean {
+//        return ContextCompat.checkSelfPermission(
+//            requireContext(),
+//            Manifest.permission.READ_EXTERNAL_STORAGE
+//        ) == PackageManager.PERMISSION_GRANTED
+//    }
+//
+//    private fun requestReadStoragePermission() {
+//        ActivityCompat.requestPermissions(
+//            requireActivity(),
+//            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+//            REQUEST_OPEN_IMAGE
+//        )
+//    }
+//
+//    private fun openImagePicker() {
+//        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+//        startActivityForResult(intent, REQUEST_OPEN_IMAGE)
+//    }
 
-    private fun requestReadStoragePermission() {
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-            REQUEST_OPEN_IMAGE
-        )
+    private val requestPermissionsLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            if (isPermissionGranted(permissions, getReadStoragePermission())) {
+                openImagePicker()
+            } else {
+                // Handle permission denied
+            }
+        }
+
+    private fun requestImagePickerPermissions() {
+        val permissionsToRequest = arrayOf(getReadStoragePermission())
+
+        // Request multiple permissions to access images
+        requestPermissionsLauncher.launch(permissionsToRequest)
     }
 
     private fun openImagePicker() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startActivityForResult(intent, REQUEST_OPEN_IMAGE)
+        // Launch the image picker
+        getContentLauncher.launch("image/*")
     }
 
-//    fun addData(){
-//        if(imgCategory.drawable == null){
-//            imageString = null
-//        }
-//        else{
-//            imageString = encodedBitmap.toString()
-//        }
-//    }
+    private fun getReadStoragePermission(): String {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Manifest.permission.READ_MEDIA_IMAGES
+        } else {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+    }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+    private fun isPermissionGranted(permissions: Map<String, Boolean>, permission: String): Boolean {
+        return permissions[permission] == true
+    }
 
-        if (requestCode == REQUEST_OPEN_IMAGE && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                val selectedImageUri: Uri? = data.data
-                try {
+    private val getContentLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            // Handle the selected image URI as needed
+            try {
                     val contentResolver = requireContext().contentResolver
-                    val inputStream = selectedImageUri?.let { contentResolver.openInputStream(it) }
+                    val inputStream = uri?.let { contentResolver.openInputStream(it) }
                     val bitmap = BitmapFactory.decodeStream(inputStream)
                     image_bird.background = null
                     image_bird.setImageBitmap(bitmap)
@@ -228,10 +264,30 @@ class BirdManualEntryDialogFragment(private val latitude : String, private val l
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
-                // Do something with the selected image URI, such as displaying it or processing it.
-            }
+//                // Do something with the selected image URI, such as displaying it or processing it.
+//            }
         }
-        else{
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+//        if (requestCode == REQUEST_OPEN_IMAGE && resultCode == Activity.RESULT_OK) {
+//            if (data != null) {
+//                val selectedImageUri: Uri? = data.data
+//                try {
+//                    val contentResolver = requireContext().contentResolver
+//                    val inputStream = selectedImageUri?.let { contentResolver.openInputStream(it) }
+//                    val bitmap = BitmapFactory.decodeStream(inputStream)
+//                    image_bird.background = null
+//                    image_bird.setImageBitmap(bitmap)
+//                    encodedBitmap = GlobalMethods.encodeImage(bitmap)
+//                } catch (e: IOException) {
+//                    e.printStackTrace()
+//                }
+//                // Do something with the selected image URI, such as displaying it or processing it.
+//            }
+//        }
+//        else{
             if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
                 val imageBitmap = data?.extras?.get("data") as Bitmap
                 image_bird.background = null
@@ -239,6 +295,6 @@ class BirdManualEntryDialogFragment(private val latitude : String, private val l
                 encodedBitmap = GlobalMethods.encodeImage(imageBitmap)
                 // Do something with the captured image, such as displaying it or saving it.
             }
-        }
+//        }
     }
 }

@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -19,6 +20,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -81,7 +83,7 @@ class UnidentifiedDialogFragment(private val latitude : String, private val long
                     val localDateTime = LocalDateTime.now()
                     val formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy HH:mm")
                     val output = localDateTime.format(formatter)
-                    val obs : Observation = Observation(null, encodedBitmap, "Unspecified Species", "I don't know", latitude, longitude, output)
+                    val obs : Observation = Observation(null, encodedBitmap, "Unspecified Species", "I don't know", null, latitude, longitude, output)
                     //GlobalVariablesMethods.user.categories?.add(cat)
                     val database = FirebaseDatabase.getInstance()
                     val databaseReference = database.getReference("Users")
@@ -121,13 +123,21 @@ class UnidentifiedDialogFragment(private val latitude : String, private val long
             // You can open the camera or perform any other action
         }
 
+        // Old code does not work properly for newer versions
+//        imgUploadImage.setOnClickListener {
+//            // Handle the "Upload Picture" option
+//            if (isReadStoragePermissionGranted()) {
+//                openImagePicker()
+//            } else {
+//                requestReadStoragePermission()
+//            }
+//            // You can trigger the image selection process
+//        }
+
         imgUploadImage.setOnClickListener {
+            // Toast.makeText(context, "hello", Toast.LENGTH_SHORT).show()
             // Handle the "Upload Picture" option
-            if (isReadStoragePermissionGranted()) {
-                openImagePicker()
-            } else {
-                requestReadStoragePermission()
-            }
+            requestImagePickerPermissions()
             // You can trigger the image selection process
         }
 
@@ -154,25 +164,76 @@ class UnidentifiedDialogFragment(private val latitude : String, private val long
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
     }
 
-    private fun isReadStoragePermissionGranted(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED
-    }
+    private val requestPermissionsLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            if (isPermissionGranted(permissions, getReadStoragePermission())) {
+                openImagePicker()
+            } else {
+                // Handle permission denied
+            }
+        }
 
-    private fun requestReadStoragePermission() {
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-            REQUEST_OPEN_IMAGE
-        )
+    private fun requestImagePickerPermissions() {
+        val permissionsToRequest = arrayOf(getReadStoragePermission())
+
+        // Request multiple permissions to access images
+        requestPermissionsLauncher.launch(permissionsToRequest)
     }
 
     private fun openImagePicker() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startActivityForResult(intent, REQUEST_OPEN_IMAGE)
+        // Launch the image picker
+        getContentLauncher.launch("image/*")
     }
+
+    private fun getReadStoragePermission(): String {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Manifest.permission.READ_MEDIA_IMAGES
+        } else {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+    }
+
+    private fun isPermissionGranted(permissions: Map<String, Boolean>, permission: String): Boolean {
+        return permissions[permission] == true
+    }
+
+    private val getContentLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            // Handle the selected image URI as needed
+            try {
+                val contentResolver = requireContext().contentResolver
+                val inputStream = uri?.let { contentResolver.openInputStream(it) }
+                val bitmap = BitmapFactory.decodeStream(inputStream)
+                image_bird.background = null
+                image_bird.setImageBitmap(bitmap)
+                encodedBitmap = GlobalMethods.encodeImage(bitmap)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+//                // Do something with the selected image URI, such as displaying it or processing it.
+//            }
+        }
+
+    // Old code does not work properly for newer versions
+//    private fun isReadStoragePermissionGranted(): Boolean {
+//        return ContextCompat.checkSelfPermission(
+//            requireContext(),
+//            Manifest.permission.READ_EXTERNAL_STORAGE
+//        ) == PackageManager.PERMISSION_GRANTED
+//    }
+//
+//    private fun requestReadStoragePermission() {
+//        ActivityCompat.requestPermissions(
+//            requireActivity(),
+//            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+//            REQUEST_OPEN_IMAGE
+//        )
+//    }
+//
+//    private fun openImagePicker() {
+//        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+//        startActivityForResult(intent, REQUEST_OPEN_IMAGE)
+//    }
 
 //    fun addData(){
 //        if(imgCategory.drawable == null){
@@ -186,23 +247,23 @@ class UnidentifiedDialogFragment(private val latitude : String, private val long
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQUEST_OPEN_IMAGE && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                val selectedImageUri: Uri? = data.data
-                try {
-                    val contentResolver = requireContext().contentResolver
-                    val inputStream = selectedImageUri?.let { contentResolver.openInputStream(it) }
-                    val bitmap = BitmapFactory.decodeStream(inputStream)
-                    image_bird.background = null
-                    image_bird.setImageBitmap(bitmap)
-                    encodedBitmap = GlobalMethods.encodeImage(bitmap)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-                // Do something with the selected image URI, such as displaying it or processing it.
-            }
-        }
-        else{
+//        if (requestCode == REQUEST_OPEN_IMAGE && resultCode == Activity.RESULT_OK) {
+//            if (data != null) {
+//                val selectedImageUri: Uri? = data.data
+//                try {
+//                    val contentResolver = requireContext().contentResolver
+//                    val inputStream = selectedImageUri?.let { contentResolver.openInputStream(it) }
+//                    val bitmap = BitmapFactory.decodeStream(inputStream)
+//                    image_bird.background = null
+//                    image_bird.setImageBitmap(bitmap)
+//                    encodedBitmap = GlobalMethods.encodeImage(bitmap)
+//                } catch (e: IOException) {
+//                    e.printStackTrace()
+//                }
+//                // Do something with the selected image URI, such as displaying it or processing it.
+//            }
+//        }
+//        else{
             if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
                 val imageBitmap = data?.extras?.get("data") as Bitmap
                 image_bird.background = null
@@ -210,6 +271,6 @@ class UnidentifiedDialogFragment(private val latitude : String, private val long
                 encodedBitmap = GlobalMethods.encodeImage(imageBitmap)
                 // Do something with the captured image, such as displaying it or saving it.
             }
-        }
+//        }
     }
 }
