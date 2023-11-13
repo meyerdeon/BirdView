@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity() {
             val user = FirebaseAuth.getInstance().currentUser
             try {
 
-                val trip = TripCard(null, tripcardName.text.toString(), LocalDate.now().toEpochDay())
+                val trip = TripCard(null, tripcardName.text.toString(), LocalDate.now().toEpochDay(), null, null)
                 //GlobalVariablesMethods.user.categories?.add(cat)
                 val database = FirebaseDatabase.getInstance()
                 val databaseReference = database.getReference("Users")

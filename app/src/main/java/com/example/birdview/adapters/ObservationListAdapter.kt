@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -21,7 +22,7 @@ import com.example.birdview.R
 import com.example.birdview.SingleObservationFragment
 import com.google.android.material.imageview.ShapeableImageView
 
-class ObservationListAdapter(private val observationList : ArrayList<Observation>) : RecyclerView.Adapter<ObservationListAdapter.ObservationViewHolder>() {
+class ObservationListAdapter(private val observationList : ArrayList<Observation>, private val task: Int, private val tripId: String?) : RecyclerView.Adapter<ObservationListAdapter.ObservationViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, ViewType: Int): ObservationViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.bird_observation_item_layout, parent, false)
@@ -42,6 +43,15 @@ class ObservationListAdapter(private val observationList : ArrayList<Observation
             args.putString("id", observation.id)
             dialogFragment.arguments = args
             dialogFragment.show((v.context as FragmentActivity).supportFragmentManager, ObservationListDialogFragment::class.java.simpleName)
+        }
+
+        holder.btnAdd.setOnClickListener {
+            //add observation to tripcard
+
+        }
+
+        if (task == 1){
+            holder.btnAdd.visibility = View.GONE
         }
         holder.birdComName.text = observation.birdComName.toString()
         holder.birdSciName.text = observation.birdSciName.toString()
@@ -71,5 +81,6 @@ class ObservationListAdapter(private val observationList : ArrayList<Observation
         val birdSciName : TextView = itemView.findViewById(R.id.tv_bird_sci_name)
         val birdDateAdded : TextView = itemView.findViewById(R.id.tv_bird_date_added)
         val expandCollapseLayout : LinearLayout = itemView.findViewById(R.id.expand_collapse_layout)
+        val btnAdd : Button = itemView.findViewById(R.id.btnAdd)
     }
 }

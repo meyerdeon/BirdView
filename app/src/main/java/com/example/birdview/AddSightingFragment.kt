@@ -105,13 +105,14 @@ class BirdListDialogFragment(private val fragmentManager : FragmentManager) : Fr
 
         checkLocationPermissions()
 
+        val tripId = arguments?.getString("tripId")
         cardViewUnidentified.setOnClickListener{
-            val childFragment = UnidentifiedDialogFragment(currentLatLng.latitude.toString(), currentLatLng.longitude.toString())
+            val childFragment = UnidentifiedDialogFragment(currentLatLng.latitude.toString(), currentLatLng.longitude.toString(), tripId)
             childFragment.show(fragmentManager, UnidentifiedDialogFragment::class.java.simpleName)
         }
 
         cardViewManualEntry.setOnClickListener(){
-            val childFragment = BirdManualEntryDialogFragment(currentLatLng.latitude.toString(), currentLatLng.longitude.toString())
+            val childFragment = BirdManualEntryDialogFragment(currentLatLng.latitude.toString(), currentLatLng.longitude.toString(), tripId)
             childFragment.show(fragmentManager, BirdManualEntryDialogFragment::class.java.simpleName)
         }
 
@@ -261,7 +262,7 @@ class BirdListDialogFragment(private val fragmentManager : FragmentManager) : Fr
                                 text.setText(null)
                                 //text.setText(imageUrl)
                                 if(count == newArrayList.size){
-                                    newRecyclerView.adapter = BirdListAdapter(newArrayList, latitude.toString(), longitude.toString(), fragmentManager)
+                                    newRecyclerView.adapter = BirdListAdapter(newArrayList, latitude.toString(), longitude.toString(), fragmentManager, arguments?.getString("tripId"))
                                     //code attribution
                                     //the following code was taken from Stack Overflow and adapted
                                     //https://stackoverflow.com/questions/5442183/using-the-animated-circle-in-an-imageview-while-loading-stuff

@@ -1,60 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="5dp"
     android:orientation="vertical"
     tools:context=".TripCardsListFragment">
 
     <LinearLayout
+        android:layout_width="340dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/shape_signup_sign_in">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="Trip Cards"
+            android:textSize="25sp"
+            android:fontFamily="@font/poppins_medium"
+            android:textStyle="bold"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginTop="10dp">
-        <LinearLayout
-            android:layout_width="340dp"
-            android:layout_height="120dp"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:background="@drawable/shape_signup_sign_in">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:text="Trip Cards"
-                android:textSize="25sp"
-                android:fontFamily="@font/poppins_medium"
-                android:textStyle="bold"
-                android:layout_gravity="center"/>
-        </LinearLayout>
-
-        <FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="20dp"
-    android:layout_marginBottom="?actionBarSize">
+        android:layout_marginTop="10dp"
+        >
 
         <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvTripcards"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:itemCount="10"
-        tools:listitem="@layout/trip_cards_viewholder"
-        tools:orientation="vertical"
-        tools:scrollbars="vertical" />
+            android:id="@+id/rvTripcards"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="70dp"
+            app:layout_constraintBottom_toTopOf="@+id/btnNewTripcard"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:itemCount="10"
+            tools:listitem="@layout/trip_cards_viewholder"
+            tools:orientation="vertical"
+            tools:scrollbars="vertical" />
 
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:indeterminate="true"
-                android:layout_gravity="center"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:id="@+id/prgLoad"
-                android:indeterminateTint="#1861D1"/>
+        <ProgressBar
+            android:id="@+id/prgLoad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="60dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:indeterminateTint="#1861D1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/rvTripcards" />
 
-</FrameLayout>
 
-    </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnNewTripcard"
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            android:background="@drawable/view_bg_text_bg2"
+            android:backgroundTint="@color/blue_3"
+            android:text="Create Tripcard"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </LinearLayout>

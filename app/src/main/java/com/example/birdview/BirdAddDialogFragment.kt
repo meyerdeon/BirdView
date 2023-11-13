@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
-class BirdAddDialogFragment : BottomSheetDialogFragment() {
+class BirdAddDialogFragment(private val tripId: String?) : BottomSheetDialogFragment() {
 
     private lateinit var image_bird : ImageView
     private var encodedBitmap : String? = null
@@ -34,6 +34,7 @@ class BirdAddDialogFragment : BottomSheetDialogFragment() {
         val url = arguments?.getString("url").toString()
         val comName = arguments?.getString("comName").toString()
         val sciName = arguments?.getString("sciName").toString()
+       // val tripId = arguments?.getString("tripId").toString()
 
         if (getDialog() != null && getDialog()?.getWindow() != null) {
             getDialog()?.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
@@ -76,17 +77,33 @@ class BirdAddDialogFragment : BottomSheetDialogFragment() {
                 //https://stackoverflow.com/questions/60432256/on-insert-data-in-firebase-realtime-database-it-deletes-previous-data
                 //ashok
                 //https://stackoverflow.com/users/12746098/ashok
-                databaseReference.child(user?.uid.toString()).child("observations").push().setValue(obs).addOnCompleteListener() {
-                    if (it.isComplete){
-                        Toast.makeText(context, "Observation added successfully.", Toast.LENGTH_SHORT).show()
+
+                if (!tripId.isNullOrEmpty()){
+                    databaseReference.child(user?.uid.toString()).child("tripcards").child(tripId).child("observations").push().setValue(obs).addOnCompleteListener() {
+                        if (it.isComplete){
+                            Toast.makeText(context, "Observation added successfully.", Toast.LENGTH_SHORT).show()
+                        }
+                        else{
+                            Toast.makeText(context, "User data retrieval failed.", Toast.LENGTH_SHORT).show()
+                        }
+                    }.addOnCompleteListener(){
+                        dismiss()
+                    }.addOnFailureListener(){
+                        Toast.makeText(context, "Failure", Toast.LENGTH_SHORT).show()
                     }
-                    else{
-                        Toast.makeText(context, "User data retrieval failed.", Toast.LENGTH_SHORT).show()
+                }else{
+                    databaseReference.child(user?.uid.toString()).child("observations").push().setValue(obs).addOnCompleteListener() {
+                        if (it.isComplete){
+                            Toast.makeText(context, "Observation added successfully.", Toast.LENGTH_SHORT).show()
+                        }
+                        else{
+                            Toast.makeText(context, "User data retrieval failed.", Toast.LENGTH_SHORT).show()
+                        }
+                    }.addOnCompleteListener(){
+                        dismiss()
+                    }.addOnFailureListener(){
+                        Toast.makeText(context, "Failure", Toast.LENGTH_SHORT).show()
                     }
-                }.addOnCompleteListener(){
-                    dismiss()
-                }.addOnFailureListener(){
-                    Toast.makeText(context, "Failure", Toast.LENGTH_SHORT).show()
                 }
 
             }
