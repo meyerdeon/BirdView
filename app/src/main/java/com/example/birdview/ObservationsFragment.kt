@@ -79,10 +79,11 @@ class ObservationsFragment : Fragment() {
                         val birdImage = obsr.child("birdImage").getValue(String::class.java)
                         val birdComName = obsr.child("birdComName").getValue(String::class.java)
                         val birdSciName = obsr.child("birdSciName").getValue(String::class.java)
+                        val birdRecording = obsr.child("recording").getValue(String::class.java)
                         val latitude = obsr.child("latitude").getValue(String::class.java)
                         val longitude = obsr.child("longitude").getValue(String::class.java)
                         val dateAdded = obsr.child("dateAdded").getValue(String::class.java)
-                        val obs = Observation(id, birdImage, birdComName, birdSciName, latitude, longitude, dateAdded)
+                        val obs = Observation(id, birdImage, birdComName, birdSciName, birdRecording, latitude, longitude, dateAdded)
                         newArrayList.add(obs)
                     }
                 }

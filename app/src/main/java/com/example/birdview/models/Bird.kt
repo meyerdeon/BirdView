@@ -10,5 +10,6 @@ data class BirdWithImage(
     val speciesCode: String,
     val comName: String,
     val sciName: String,
-    var url : String?
+    var url : String?,
+    var recording : String?
 )
