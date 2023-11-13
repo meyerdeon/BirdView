@@ -110,7 +110,7 @@ class BirdManualEntryDialogFragment(private val latitude : String, private val l
                         val localDateTime = LocalDateTime.now()
                         val formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy HH:mm")
                         val output = localDateTime.format(formatter)
-                        val obs : Observation = Observation(null, encodedBitmap, et_com_name.text.toString(), et_sci_name.text.toString(), latitude, longitude, output)
+                        val obs : Observation = Observation(null, encodedBitmap, et_com_name.text.toString(), et_sci_name.text.toString(),null, latitude, longitude, output )
                         //GlobalVariablesMethods.user.categories?.add(cat)
                         val database = FirebaseDatabase.getInstance()
                         val databaseReference = database.getReference("Users")
@@ -122,6 +122,7 @@ class BirdManualEntryDialogFragment(private val latitude : String, private val l
                         if ((!tripId.isNullOrEmpty())){
                             databaseReference.child(user?.uid.toString()).child("tripcards").child(tripId).child("observations").push().setValue(obs).addOnCompleteListener() {
                                 if (it.isComplete){
+                                    replaceFragment(TripCardsListFragment())
                                     Toast.makeText(context, "Observation added successfully.", Toast.LENGTH_SHORT).show()
                                 }
                                 else{
@@ -254,6 +255,14 @@ class BirdManualEntryDialogFragment(private val latitude : String, private val l
                 encodedBitmap = GlobalMethods.encodeImage(imageBitmap)
                 // Do something with the captured image, such as displaying it or saving it.
             }
+        }
+    }
+
+    fun replaceFragment(fragment: Fragment){
+        if(fragment != null){
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.map, fragment)
+            transaction.commit()
         }
     }
 }

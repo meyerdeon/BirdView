@@ -21,6 +21,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -81,7 +82,7 @@ class UnidentifiedDialogFragment(private val latitude : String, private val long
                     val localDateTime = LocalDateTime.now()
                     val formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy HH:mm")
                     val output = localDateTime.format(formatter)
-                    val obs : Observation = Observation(null, encodedBitmap, "Unspecified Species", "I don't know", latitude, longitude, output)
+                    val obs : Observation = Observation(null, encodedBitmap, "Unspecified Species", "I don't know",null, latitude, longitude, output)
                     //GlobalVariablesMethods.user.categories?.add(cat)
                     val database = FirebaseDatabase.getInstance()
                     val databaseReference = database.getReference("Users")
@@ -94,6 +95,7 @@ class UnidentifiedDialogFragment(private val latitude : String, private val long
                     if (!tripId.isNullOrEmpty()){
                         databaseReference.child(user?.uid.toString()).child("tripcards").child(tripId).child("observations").push().setValue(obs).addOnCompleteListener() {
                             if (it.isComplete){
+                                replaceFragment(TripCardsListFragment())
                                 Toast.makeText(context, "Observation added successfully.", Toast.LENGTH_SHORT).show()
                             }
                             else{
@@ -227,6 +229,14 @@ class UnidentifiedDialogFragment(private val latitude : String, private val long
                 encodedBitmap = GlobalMethods.encodeImage(imageBitmap)
                 // Do something with the captured image, such as displaying it or saving it.
             }
+        }
+    }
+
+    fun replaceFragment(fragment: Fragment){
+        if(fragment != null){
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.map, fragment)
+            transaction.commit()
         }
     }
 }

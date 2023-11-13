@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
@@ -81,6 +82,7 @@ class BirdAddDialogFragment(private val tripId: String?) : BottomSheetDialogFrag
                 if (!tripId.isNullOrEmpty()){
                     databaseReference.child(user?.uid.toString()).child("tripcards").child(tripId).child("observations").push().setValue(obs).addOnCompleteListener() {
                         if (it.isComplete){
+                            replaceFragment(TripCardsListFragment())
                             Toast.makeText(context, "Observation added successfully.", Toast.LENGTH_SHORT).show()
                         }
                         else{
@@ -116,5 +118,13 @@ class BirdAddDialogFragment(private val tripId: String?) : BottomSheetDialogFrag
 
     override fun getTheme(): Int {
         return R.style.AppBottomSheetDialogTheme
+    }
+
+    fun replaceFragment(fragment: Fragment){
+        if(fragment != null){
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.map, fragment)
+            transaction.commit()
+        }
     }
 }

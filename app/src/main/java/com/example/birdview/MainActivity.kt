@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         addSighting.setOnClickListener {
-            replaceFragment(BirdListDialogFragment(supportFragmentManager))
+            replaceFragment(BirdListDialogFragment(supportFragmentManager, null))
             dialog.dismiss()
         }
 

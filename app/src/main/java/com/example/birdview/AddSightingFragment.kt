@@ -43,7 +43,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-class BirdListDialogFragment(private val fragmentManager : FragmentManager) : Fragment() {
+class BirdListDialogFragment(private val fragmentManager : FragmentManager, private val tripId: String?) : Fragment() {
     private lateinit var newRecyclerView : RecyclerView
     companion object {
         private const val REQUEST_LOCATION_PERMISSION = 101
@@ -79,7 +79,7 @@ class BirdListDialogFragment(private val fragmentManager : FragmentManager) : Fr
         mediaPlayer = MediaPlayer()
         checkLocationPermissions()
 
-        val tripId = arguments?.getString("tripId")
+        //val tripId = arguments?.getString("tripId")
         cardViewUnidentified.setOnClickListener{
             val childFragment = UnidentifiedDialogFragment(currentLatLng.latitude.toString(), currentLatLng.longitude.toString(), tripId)
             childFragment.show(fragmentManager, UnidentifiedDialogFragment::class.java.simpleName)
@@ -381,7 +381,7 @@ class BirdListDialogFragment(private val fragmentManager : FragmentManager) : Fr
             }
 
             // All requests completed (with or without errors)
-            newRecyclerView.adapter = BirdListAdapter(newArrayList, latitude.toString(), longitude.toString(), fragmentManager, mediaPlayer)
+            newRecyclerView.adapter = BirdListAdapter(newArrayList, latitude.toString(), longitude.toString(), fragmentManager, tripId, mediaPlayer)
             //code attribution
             //the following code was taken from Stack Overflow and adapted
             //https://stackoverflow.com/questions/5442183/using-the-animated-circle-in-an-imageview-while-loading-stuff

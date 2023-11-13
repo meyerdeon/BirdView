@@ -63,7 +63,7 @@ class TripObservationsListFragment(private val obsvCount: Int, private val speci
         val tripId = arguments?.getString("tripId")
 
         btnAddSigthing.setOnClickListener {
-            replaceFragment( BirdListDialogFragment(parentFragmentManager), tripId)
+            replaceFragment( BirdListDialogFragment(parentFragmentManager, tripId), null)
         }
         return View
     }
@@ -100,7 +100,7 @@ class TripObservationsListFragment(private val obsvCount: Int, private val speci
                         val latitude = obsr.child("latitude").getValue(String::class.java)
                         val longitude = obsr.child("longitude").getValue(String::class.java)
                         val dateAdded = obsr.child("dateAdded").getValue(String::class.java)
-                        val obs = Observation(id, birdImage, birdComName, birdSciName, latitude, longitude, dateAdded)
+                        val obs = Observation(id, birdImage, birdComName, birdSciName,null, latitude, longitude, dateAdded)
                         newArrayList.add(obs)
                         newArrayList
                     }
