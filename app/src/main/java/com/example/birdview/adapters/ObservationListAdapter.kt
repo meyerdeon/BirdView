@@ -38,11 +38,22 @@ class ObservationListAdapter(private val observationList : ArrayList<Observation
         //Piyush Kalyan
         //https://stackoverflow.com/users/15750578/piyush-kalyan
         holder.expandCollapseLayout.setOnClickListener {v->
-            val dialogFragment = ObservationListDialogFragment()
-            val args = Bundle()
-            args.putString("id", observation.id)
-            dialogFragment.arguments = args
-            dialogFragment.show((v.context as FragmentActivity).supportFragmentManager, ObservationListDialogFragment::class.java.simpleName)
+            if (!tripId.isNullOrEmpty()){
+                val dialogFragment = ObservationListDialogFragment(tripId)
+                val args = Bundle()
+                args.putString("tripId", tripId)
+                args.putString("id", observation.id)
+                args.putString("tripObservation", "true")
+                dialogFragment.arguments = args
+                dialogFragment.show((v.context as FragmentActivity).supportFragmentManager, ObservationListDialogFragment::class.java.simpleName)
+            }else{
+
+                val dialogFragment = ObservationListDialogFragment(null)
+                val args = Bundle()
+                args.putString("id", observation.id)
+                dialogFragment.arguments = args
+                dialogFragment.show((v.context as FragmentActivity).supportFragmentManager, ObservationListDialogFragment::class.java.simpleName)
+            }
         }
 
         holder.btnAdd.setOnClickListener {

@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase
 class TripObservationsListFragment(private val obsvCount: Int, private val speciescount: Int ) : Fragment() {
     private lateinit var newRecyclerView : RecyclerView
     private lateinit var newArrayList : ArrayList<Observation>
+    private lateinit var newTripIdArrayList : ArrayList<String>
     private lateinit var binding: FragmentObservationsBinding
     private lateinit var prgLoad : ProgressBar
     private lateinit var btnAddSigthing : Button
@@ -101,13 +102,14 @@ class TripObservationsListFragment(private val obsvCount: Int, private val speci
                         val dateAdded = obsr.child("dateAdded").getValue(String::class.java)
                         val obs = Observation(id, birdImage, birdComName, birdSciName, latitude, longitude, dateAdded)
                         newArrayList.add(obs)
+                        newArrayList
                     }
                 }
             }.addOnCompleteListener(){
                 if (it.isComplete){
                     prgLoad.visibility = View.GONE
                     btnAddSigthing.visibility = View.VISIBLE
-                    newRecyclerView.adapter = ObservationListAdapter(newArrayList, 1, null)
+                    newRecyclerView.adapter = ObservationListAdapter(newArrayList, 1, arguments?.getString("tripId"))
                 }
                 else{
                     Toast.makeText(context, "User data retrieval failed.", Toast.LENGTH_SHORT).show()
