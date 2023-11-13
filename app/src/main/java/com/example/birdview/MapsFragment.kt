@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -36,6 +37,7 @@ import kotlinx.coroutines.*
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import kotlin.math.roundToInt
 
 //import com.example.birdview.databinding.ActivityMapsBinding
 
@@ -368,6 +370,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
 
         val getDirections = dialog.findViewById<Button>(R.id.btnGetDirections)
         val locationName = dialog.findViewById<TextView>(R.id.txtLocationName)
+        val displayDistance = dialog.findViewById<TextView>(R.id.txtDistance)
 
         locationName.text = place
 
@@ -384,11 +387,21 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
             return
         }
 
+        //the following code was taken and adapted from StackOverflow
+        //https://stackoverflow.com/questions/6981916/how-to-calculate-distance-between-two-locations-using-their-longitude-and-latitu
+        //author: sandeepmaaram
+        //https://stackoverflow.com/users/2720929/sandeepmaaram
         fusedLocationProviderClient.lastLocation
             .addOnSuccessListener {
                 if (it != null) {
                     source = LatLng(it.latitude, it.longitude)
-
+                    val src = Location("source")
+                    val dest = Location("destination")
+                    src.set(it)
+                    dest.latitude = destination.latitude
+                    dest.longitude = destination.longitude
+                    val distance = (src).distanceTo(dest) * 0.001 //convert to kilometers
+                    displayDistance.text = "${distance.roundToInt()}km away"
                 }else{
                     Toast.makeText(this.requireContext(), "Cannot get location.", Toast.LENGTH_SHORT).show()
                 }
