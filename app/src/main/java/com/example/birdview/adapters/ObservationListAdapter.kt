@@ -47,7 +47,7 @@ class ObservationListAdapter(private val observationList : ArrayList<Observation
                 dialogFragment.arguments = args
                 dialogFragment.show((v.context as FragmentActivity).supportFragmentManager, ObservationListDialogFragment::class.java.simpleName)
             }else{
-
+                //if fragment is not being called from trip sightings fragment
                 val dialogFragment = ObservationListDialogFragment(null)
                 val args = Bundle()
                 args.putString("id", observation.id)
