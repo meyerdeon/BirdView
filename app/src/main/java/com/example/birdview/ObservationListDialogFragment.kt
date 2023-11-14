@@ -7,11 +7,13 @@ import android.location.Geocoder
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
+import android.widget.Chronometer
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -40,6 +42,8 @@ class ObservationListDialogFragment(private val tripId: String?) : DialogFragmen
     private lateinit var tvBirdSpecifiedLocation : TextView
     private lateinit var imgclose : ImageView
     private lateinit var mediaPlayer: MediaPlayer
+    private lateinit var chronometerObservationDuration : Chronometer
+    private lateinit var chronometerObservationElapsed : Chronometer
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,11 +73,15 @@ class ObservationListDialogFragment(private val tripId: String?) : DialogFragmen
         // Set a prepared listener to start playback when prepared
         mediaPlayer.setOnPreparedListener {
             mediaPlayer.start()
+            chronometerObservationElapsed.base = SystemClock.elapsedRealtime()
+            chronometerObservationElapsed.start()
         }
 
         // Set a completion listener to reset the MediaPlayer when playback completes
         mediaPlayer.setOnCompletionListener {
             mediaPlayer.reset()
+            chronometerObservationElapsed.stop()
+            chronometerObservationElapsed.base = SystemClock.elapsedRealtime()
             btnPlayAudio.text = "Play Audio"
         }
 
@@ -84,6 +92,8 @@ class ObservationListDialogFragment(private val tripId: String?) : DialogFragmen
         } catch (e: Exception) {
             // Handle any exceptions during preparation
             btnPlayAudio.text = "Play Audio"
+            chronometerObservationElapsed.stop()
+            chronometerObservationElapsed.base = SystemClock.elapsedRealtime()
             mediaPlayer.reset()
             Toast.makeText(context, "An error has occur. Error: ${e}", Toast.LENGTH_SHORT).show()
             e.printStackTrace()
@@ -111,6 +121,8 @@ class ObservationListDialogFragment(private val tripId: String?) : DialogFragmen
         tvBirdLongitudeLatitude = view.findViewById(R.id.tv_bird_longitude_latitude)
         tvBirdSpecifiedLocation = view.findViewById(R.id.tv_bird_specified_location)
         imgclose = view.findViewById<ImageView>(R.id.img_close)
+        chronometerObservationDuration = view.findViewById(R.id.chronometerObservationDuration)
+        chronometerObservationElapsed = view.findViewById(R.id.chronometerObservationElapsed)
         imgclose.setOnClickListener(){
             dismiss()
         }
@@ -118,12 +130,13 @@ class ObservationListDialogFragment(private val tripId: String?) : DialogFragmen
         btnPlayAudio.setOnClickListener(){
             //  previousViewHolder?.let { notifyItemChanged(it.adapterPosition) }
             if(btnPlayAudio.text.equals("Play Audio")){
-                btnPlayAudio.setText("Stop Audio")
-                // Create a new MediaPlayer for the current item
 
-                // Create a new MediaPlayer for the current item
+                btnPlayAudio.setText("Stop Audio")
+
                 if (mediaPlayer.isPlaying) {
                     mediaPlayer.stop()
+                    chronometerObservationElapsed.stop()
+                    chronometerObservationElapsed.base = SystemClock.elapsedRealtime()
                     mediaPlayer.reset()
 
                 }
@@ -133,6 +146,8 @@ class ObservationListDialogFragment(private val tripId: String?) : DialogFragmen
                 if(btnPlayAudio.text.equals("Stop Audio")){
                     mediaPlayer.stop()
                     mediaPlayer.reset()
+                    chronometerObservationElapsed.stop()
+                    chronometerObservationElapsed.base = SystemClock.elapsedRealtime()
                     btnPlayAudio.setText("Play Audio")
                 }
             }
@@ -315,6 +330,9 @@ class ObservationListDialogFragment(private val tripId: String?) : DialogFragmen
                     imgShare.visibility = View.VISIBLE
                     prgLoad.visibility = View.GONE
                     imgclose.visibility = View.VISIBLE
+                    val duration = getAudioFileDuration(recording)
+                    setChronometerDuration(chronometerObservationDuration, duration)
+
                 }.addOnFailureListener(){
                     Toast.makeText(context, "User data retrieval failed.", Toast.LENGTH_SHORT).show()
                 }
@@ -327,6 +345,16 @@ class ObservationListDialogFragment(private val tripId: String?) : DialogFragmen
         return view
     }
 
+    fun setChronometerDuration(chronometer: Chronometer, durationInMillis: Long) {
+        val seconds = (durationInMillis / 1000).toInt()
+        val minutes = seconds / 60
+        //val hours = minutes / 60
+
+        //val formattedTime = String.format("%02d:%02d:%02d", hours, minutes % 60, seconds % 60)
+        val formattedTime = String.format("%02d:%02d", minutes % 60, seconds % 60)
+        chronometer.text = formattedTime
+    }
+
     override fun onStart() {
         super.onStart()
         val dialog = dialog
@@ -337,10 +365,25 @@ class ObservationListDialogFragment(private val tripId: String?) : DialogFragmen
         }
     }
 
+    fun getAudioFileDuration(audioFilePath: String): Long {
+        val mediaPlayer = MediaPlayer()
+        try {
+            mediaPlayer.setDataSource(audioFilePath)
+            mediaPlayer.prepare()
+            return mediaPlayer.duration.toLong()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } finally {
+            mediaPlayer.release()
+        }
+        return 0L
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 
         // Release MediaPlayer when the fragment is being destroyed
         mediaPlayer.release()
+        chronometerObservationElapsed.stop()
     }
 }

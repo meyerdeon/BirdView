@@ -137,21 +137,55 @@
                     android:textColor="@color/grey_1"
                     android:textSize="17sp" />
 
-                <android.widget.Button
-                    android:id="@+id/btn_play_audio"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="10dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/shape_button_rounded"
-                    android:fontFamily="@font/poppins_medium"
-                    android:padding="8dp"
-                    android:text="Play Audio"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:layout_gravity="center">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <Chronometer
+                            android:id="@+id/chronometerObservationElapsed"
+                            android:gravity="center"
+                            android:textSize="18sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/grey_1"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:textColor="@color/grey_1"
+                            android:text="/"
+                            android:textSize="18sp"
+                            android:layout_height="wrap_content"/>
+                        <Chronometer
+                            android:textColor="@color/grey_1"
+                            android:id="@+id/chronometerObservationDuration"
+                            android:gravity="center"
+                            android:textSize="18sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+                    <android.widget.Button
+                        android:id="@+id/btn_play_audio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/shape_button_rounded"
+                        android:fontFamily="@font/poppins_medium"
+                        android:padding="8dp"
+                        android:text="Play Audio"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+                </LinearLayout>
 
                 <FrameLayout
                     android:id="@+id/mapContainer"
