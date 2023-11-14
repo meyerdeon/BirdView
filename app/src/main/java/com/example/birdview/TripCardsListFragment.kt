@@ -140,14 +140,9 @@ class TripCardsListFragment : Fragment() {
             try {
 
                 val trip = TripCard(null, tripcardName.text.toString(), LocalDate.now().toEpochDay(), null, null)
-                //GlobalVariablesMethods.user.categories?.add(cat)
+
                 val database = FirebaseDatabase.getInstance()
                 val databaseReference = database.getReference("Users")
-                //code attribution
-                //the following code was taken from Stack Overflow and adapted
-                //https://stackoverflow.com/questions/60432256/on-insert-data-in-firebase-realtime-database-it-deletes-previous-data
-                //ashok
-                //https://stackoverflow.com/users/12746098/ashok
                 databaseReference.child(user?.uid.toString()).child("tripcards").push().setValue(trip).addOnCompleteListener() {
                     if (it.isComplete){
                         Toast.makeText(requireContext(), "Tripcard created successfully.", Toast.LENGTH_SHORT).show()

@@ -230,26 +230,17 @@ class SettingsFragment : Fragment() {
         btnUpload.setOnClickListener {
             val user = FirebaseAuth.getInstance().currentUser
             try {
-                //code attribution
-                //the following code was taken from Stack Overflow and adapted
-                //https://stackoverflow.com/questions/53781154/kotlin-android-java-string-datetime-format-api21#:~:text=yyyy%20HH%3Amm%22)%3B%20String,%3D%20new%20SimpleDateFormat(%22dd.
-                //arifng
-                //https://stackoverflow.com/users/989643/arifng
+                //Upload the users selected profile picture
                 val _user : User = User(profilePicture = encodedBitmap)
-                //GlobalVariablesMethods.user.categories?.add(cat)
+
                 val database = FirebaseDatabase.getInstance()
                 val databaseReference = database.getReference("Users")
-                //code attribution
-                //the following code was taken from Stack Overflow and adapted
-                //https://stackoverflow.com/questions/60432256/on-insert-data-in-firebase-realtime-database-it-deletes-previous-data
-                //ashok
-                //https://stackoverflow.com/users/12746098/ashok
 
                     databaseReference.child(user?.uid.toString()).child("profilePicture").setValue(_user).addOnCompleteListener() {
                         if (it.isComplete){
 
                             val image = GlobalMethods.decodeImage(encodedBitmap)
-                            binding.imgUserPP.setImageBitmap(image)
+                            binding.imgUserPP.setImageBitmap(image) //set the code
                             Toast.makeText(context, "Profile picture has been edited", Toast.LENGTH_SHORT).show()
                         }
                         else{
