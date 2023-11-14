@@ -97,7 +97,7 @@ class UnidentifiedDialogFragment(private val latitude : String, private val long
                             Toast.makeText(context, "Observation added successfully.", Toast.LENGTH_SHORT).show()
                         }
                         else{
-                            Toast.makeText(context, "User data retrieval failed.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Observation could not be added.", Toast.LENGTH_SHORT).show()
                         }
                     }.addOnCompleteListener(){
                         dismiss()

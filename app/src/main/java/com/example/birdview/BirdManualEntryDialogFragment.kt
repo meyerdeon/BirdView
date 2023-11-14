@@ -123,14 +123,10 @@ class BirdManualEntryDialogFragment(private val latitude : String, private val l
                         //https://stackoverflow.com/users/12746098/ashok
                         databaseReference.child(user?.uid.toString()).child("observations").push().setValue(obs).addOnCompleteListener() {
                             if (it.isComplete){
-                                btnAddSighting.isEnabled = true
-                                imgTakePicture.isEnabled = true
-                                imgUploadImage.isEnabled = true
-                                btnCancel.isEnabled = false
                                 Toast.makeText(context, "Observation added successfully.", Toast.LENGTH_SHORT).show()
                             }
                             else{
-                                Toast.makeText(context, "User data retrieval failed.", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Observation could not be added.", Toast.LENGTH_SHORT).show()
                             }
                         }.addOnCompleteListener(){
                             dismiss()
