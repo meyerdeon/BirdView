@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
@@ -19,7 +20,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
-class BirdAddDialogFragment : BottomSheetDialogFragment() {
+class BirdAddDialogFragment(private val tripId: String?) : BottomSheetDialogFragment() {
 
     private lateinit var image_bird : ImageView
     private var encodedBitmap : String? = null
@@ -77,17 +78,34 @@ class BirdAddDialogFragment : BottomSheetDialogFragment() {
                 //https://stackoverflow.com/questions/60432256/on-insert-data-in-firebase-realtime-database-it-deletes-previous-data
                 //ashok
                 //https://stackoverflow.com/users/12746098/ashok
-                databaseReference.child(user?.uid.toString()).child("observations").push().setValue(obs).addOnCompleteListener() {
-                    if (it.isComplete){
-                        Toast.makeText(context, "Observation added successfully.", Toast.LENGTH_SHORT).show()
+
+                if (!tripId.isNullOrEmpty()){
+                    databaseReference.child(user?.uid.toString()).child("tripcards").child(tripId).child("observations").push().setValue(obs).addOnCompleteListener() {
+                        if (it.isComplete){
+                            replaceFragment(TripCardsListFragment())
+                            Toast.makeText(context, "Observation added successfully.", Toast.LENGTH_SHORT).show()
+                        }
+                        else{
+                            Toast.makeText(context, "User data retrieval failed.", Toast.LENGTH_SHORT).show()
+                        }
+                    }.addOnCompleteListener(){
+                        dismiss()
+                    }.addOnFailureListener(){
+                        Toast.makeText(context, "Failure", Toast.LENGTH_SHORT).show()
                     }
-                    else{
-                        Toast.makeText(context, "User data retrieval failed.", Toast.LENGTH_SHORT).show()
+                }else{
+                    databaseReference.child(user?.uid.toString()).child("observations").push().setValue(obs).addOnCompleteListener() {
+                        if (it.isComplete){
+                            Toast.makeText(context, "Observation added successfully.", Toast.LENGTH_SHORT).show()
+                        }
+                        else{
+                            Toast.makeText(context, "User data retrieval failed.", Toast.LENGTH_SHORT).show()
+                        }
+                    }.addOnCompleteListener(){
+                        dismiss()
+                    }.addOnFailureListener(){
+                        Toast.makeText(context, "Failure", Toast.LENGTH_SHORT).show()
                     }
-                }.addOnCompleteListener(){
-                    dismiss()
-                }.addOnFailureListener(){
-                    Toast.makeText(context, "Failure", Toast.LENGTH_SHORT).show()
                 }
 
             }
@@ -100,5 +118,13 @@ class BirdAddDialogFragment : BottomSheetDialogFragment() {
 
     override fun getTheme(): Int {
         return R.style.AppBottomSheetDialogTheme
+    }
+
+    fun replaceFragment(fragment: Fragment){
+        if(fragment != null){
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.map, fragment)
+            transaction.commit()
+        }
     }
 }

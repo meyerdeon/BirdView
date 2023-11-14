@@ -64,7 +64,7 @@ class Validation {
                         return true
                     }
                     else{
-                        etPassword.error = "Your password needs to contain at least one special character and number."
+                        etPassword.error = "Your password needs to contain a combination of special characters, numbers and letters."
                         return false
                     }
                 }

@@ -30,6 +30,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.birdview.api_interfaces.ImagePickerCallback
+
+import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -40,7 +42,8 @@ import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class UnidentifiedDialogFragment(private val latitude : String, private val longitude : String) : BottomSheetDialogFragment(), ImagePickerCallback {
+class UnidentifiedDialogFragment(private val latitude : String, private val longitude : String, private val tripId: String?) : BottomSheetDialogFragment(),
+    ImagePickerCallback {
 
     companion object {
         const val REQUEST_IMAGE_CAPTURE = 101
@@ -134,50 +137,165 @@ class UnidentifiedDialogFragment(private val latitude : String, private val long
                     val localDateTime = LocalDateTime.now()
                     val formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy HH:mm")
                     val output = localDateTime.format(formatter)
-                    tempFile?.let { file ->
-                        // Upload the file to Firebase Storage
-                        val storageRef = storage.reference.child("${user?.uid.toString()}/audio/${file.name}")
-                        val uploadTask = storageRef.putFile(Uri.fromFile(file))
+                    val obs : Observation = Observation(null, encodedBitmap, "Unspecified Species", "I don't know",null, latitude, longitude, output)
+                    //GlobalVariablesMethods.user.categories?.add(cat)
+                    val database = FirebaseDatabase.getInstance()
+                    val databaseReference = database.getReference("Users")
+                    //code attribution
+                    //the following code was taken from Stack Overflow and adapted
+                    //https://stackoverflow.com/questions/60432256/on-insert-data-in-firebase-realtime-database-it-deletes-previous-data
+                    //ashok
+                    //https://stackoverflow.com/users/12746098/ashok
 
-                        uploadTask.addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                // File upload successful
-                                // You can get the download URL if needed
-                                storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
-                                    tempFile?.delete()
+                    if (!tripId.isNullOrEmpty()){
+                        //add unidentified entry to tripcard
+
+                            tempFile?.let { file ->
+                                // Upload the file to Firebase Storage
+                                val storageRef =
+                                    storage.reference.child("${user?.uid.toString()}/audio/${file.name}")
+                                val uploadTask = storageRef.putFile(Uri.fromFile(file))
+
+                                uploadTask.addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        // File upload successful
+                                        // You can get the download URL if needed
+                                        storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                                            tempFile?.delete()
+                                            Toast.makeText(
+                                                requireContext(),
+                                                "Audio uploaded. URI: $downloadUri",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                            val obs: Observation = Observation(
+                                                null,
+                                                encodedBitmap,
+                                                "Unspecified Species",
+                                                "I don't know",
+                                                downloadUri.toString(),
+                                                latitude,
+                                                longitude,
+                                                output
+                                            )
+
+                                            val database = FirebaseDatabase.getInstance()
+                                            val databaseReference = database.getReference("Users")
+
+                                            databaseReference.child(user?.uid.toString())
+                                                .child("tripcards")
+                                                .child(tripId)
+                                                .child("observations").push().setValue(obs)
+                                                .addOnCompleteListener() {
+                                                    if (it.isComplete) {
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Observation added successfully.",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                    } else {
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Observation could not be added.",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                    }
+                                                }.addOnCompleteListener() {
+                                                    dismiss()
+                                                }.addOnFailureListener() {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Failure",
+                                                        Toast.LENGTH_SHORT
+                                                    )
+                                                        .show()
+                                                }
+
+                                        }
+                                    } else {
+                                        Toast.makeText(
+                                            requireContext(),
+                                            "Error uploading audio: ${task.exception?.message}",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                            }
+                    }else{
+                        tempFile?.let { file ->
+                            // Upload the file to Firebase Storage
+                            val storageRef =
+                                storage.reference.child("${user?.uid.toString()}/audio/${file.name}")
+                            val uploadTask = storageRef.putFile(Uri.fromFile(file))
+
+                            uploadTask.addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    // File upload successful
+                                    // You can get the download URL if needed
+                                    storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                                        tempFile?.delete()
+                                        Toast.makeText(
+                                            requireContext(),
+                                            "Audio uploaded. URI: $downloadUri",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        val obs: Observation = Observation(
+                                            null,
+                                            encodedBitmap,
+                                            "Unspecified Species",
+                                            "I don't know",
+                                            downloadUri.toString(),
+                                            latitude,
+                                            longitude,
+                                            output
+                                        )
+                                        //GlobalVariablesMethods.user.categories?.add(cat)
+                                        val database = FirebaseDatabase.getInstance()
+                                        val databaseReference = database.getReference("Users")
+                                        //code attribution
+                                        //the following code was taken from Stack Overflow and adapted
+                                        //https://stackoverflow.com/questions/60432256/on-insert-data-in-firebase-realtime-database-it-deletes-previous-data
+                                        //ashok
+                                        //https://stackoverflow.com/users/12746098/ashok
+                                        databaseReference.child(user?.uid.toString())
+                                            .child("observations").push().setValue(obs)
+                                            .addOnCompleteListener() {
+                                                if (it.isComplete) {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Observation added successfully.",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                } else {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Observation could not be added.",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                            }.addOnCompleteListener() {
+                                                dismiss()
+                                            }.addOnFailureListener() {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Failure",
+                                                    Toast.LENGTH_SHORT
+                                                )
+                                                    .show()
+                                            }
+
+                                    }
+                                } else {
                                     Toast.makeText(
                                         requireContext(),
-                                        "Audio uploaded. URI: $downloadUri",
+                                        "Error uploading audio: ${task.exception?.message}",
                                         Toast.LENGTH_SHORT
                                     ).show()
-                                    val obs : Observation = Observation(null, encodedBitmap, "Unspecified Species", "I don't know", downloadUri.toString(), latitude, longitude, output)
-                                    //GlobalVariablesMethods.user.categories?.add(cat)
-                                    val database = FirebaseDatabase.getInstance()
-                                    val databaseReference = database.getReference("Users")
-                                    //code attribution
-                                    //the following code was taken from Stack Overflow and adapted
-                                    //https://stackoverflow.com/questions/60432256/on-insert-data-in-firebase-realtime-database-it-deletes-previous-data
-                                    //ashok
-                                    //https://stackoverflow.com/users/12746098/ashok
-                                    databaseReference.child(user?.uid.toString()).child("observations").push().setValue(obs).addOnCompleteListener() {
-                                        if (it.isComplete){
-                                            Toast.makeText(context, "Observation added successfully.", Toast.LENGTH_SHORT).show()
-                                        }
-                                        else{
-                                            Toast.makeText(context, "Observation could not be added.", Toast.LENGTH_SHORT).show()
-                                        }
-                                    }.addOnCompleteListener(){
-                                        dismiss()
-                                    }.addOnFailureListener(){
-                                        Toast.makeText(context, "Failure", Toast.LENGTH_SHORT).show()
-                                    }
-
                                 }
-                            } else {
-                                Toast.makeText(requireContext(), "Error uploading audio: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
+
+
                 }
                 catch (ex : Exception){
                     Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
@@ -508,5 +626,13 @@ class UnidentifiedDialogFragment(private val latitude : String, private val long
         mediaRecorder = null
         playbackChronometer.stop()
         recordingChronometer.stop()
+    }
+
+    fun replaceFragment(fragment: Fragment){
+        if(fragment != null){
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.map, fragment)
+            transaction.commit()
+        }
     }
 }

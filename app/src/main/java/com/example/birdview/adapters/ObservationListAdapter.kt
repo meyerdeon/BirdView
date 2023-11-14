@@ -1,26 +1,22 @@
 package com.example.birdview.adapters
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.birdview.GlobalMethods
 import com.example.birdview.Observation
 import com.example.birdview.ObservationListDialogFragment
 import com.example.birdview.R
-import com.example.birdview.SingleObservationFragment
 import com.google.android.material.imageview.ShapeableImageView
 
-class ObservationListAdapter(private val observationList : ArrayList<Observation>) : RecyclerView.Adapter<ObservationListAdapter.ObservationViewHolder>() {
+class ObservationListAdapter(private val observationList : ArrayList<Observation>, private val task: Int, private val tripId: String?) : RecyclerView.Adapter<ObservationListAdapter.ObservationViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, ViewType: Int): ObservationViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.bird_observation_item_layout, parent, false)
@@ -36,11 +32,31 @@ class ObservationListAdapter(private val observationList : ArrayList<Observation
         //Piyush Kalyan
         //https://stackoverflow.com/users/15750578/piyush-kalyan
         holder.expandCollapseLayout.setOnClickListener {v->
-            val dialogFragment = ObservationListDialogFragment()
-            val args = Bundle()
-            args.putString("id", observation.id)
-            dialogFragment.arguments = args
-            dialogFragment.show((v.context as FragmentActivity).supportFragmentManager, ObservationListDialogFragment::class.java.simpleName)
+            if (!tripId.isNullOrEmpty()){
+                val dialogFragment = ObservationListDialogFragment(tripId)
+                val args = Bundle()
+                args.putString("tripId", tripId)
+                args.putString("id", observation.id)
+                args.putString("tripObservation", "true")
+                dialogFragment.arguments = args
+                dialogFragment.show((v.context as FragmentActivity).supportFragmentManager, ObservationListDialogFragment::class.java.simpleName)
+            }else{
+                //if fragment is not being called from trip sightings fragment
+                val dialogFragment = ObservationListDialogFragment(null)
+                val args = Bundle()
+                args.putString("id", observation.id)
+                dialogFragment.arguments = args
+                dialogFragment.show((v.context as FragmentActivity).supportFragmentManager, ObservationListDialogFragment::class.java.simpleName)
+            }
+        }
+
+        holder.btnAdd.setOnClickListener {
+            //add observation to tripcard
+
+        }
+
+        if (task == 1){
+            holder.btnAdd.visibility = View.GONE
         }
         holder.birdComName.text = observation.birdComName.toString()
         holder.birdSciName.text = observation.birdSciName.toString()
@@ -70,5 +86,6 @@ class ObservationListAdapter(private val observationList : ArrayList<Observation
         val birdSciName : TextView = itemView.findViewById(R.id.tv_bird_sci_name)
         val birdDateAdded : TextView = itemView.findViewById(R.id.tv_bird_date_added)
         val expandCollapseLayout : LinearLayout = itemView.findViewById(R.id.expand_collapse_layout)
+        val btnAdd : Button = itemView.findViewById(R.id.btnAdd)
     }
 }

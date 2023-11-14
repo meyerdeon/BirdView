@@ -44,7 +44,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-class AddSightingFragment(private val fragmentManager : FragmentManager) : Fragment() {
+class AddSightingFragment(private val fragmentManager : FragmentManager, private val tripId: String?) : Fragment() {
     private lateinit var newRecyclerView : RecyclerView
     companion object {
         private const val REQUEST_LOCATION_PERMISSION = 101
@@ -81,13 +81,14 @@ class AddSightingFragment(private val fragmentManager : FragmentManager) : Fragm
         mediaPlayer = MediaPlayer()
         checkLocationPermissions()
 
+        //val tripId = arguments?.getString("tripId")
         cardViewUnidentified.setOnClickListener{
-            val childFragment = UnidentifiedDialogFragment(currentLatLng.latitude.toString(), currentLatLng.longitude.toString())
+            val childFragment = UnidentifiedDialogFragment(currentLatLng.latitude.toString(), currentLatLng.longitude.toString(), tripId)
             childFragment.show(fragmentManager, UnidentifiedDialogFragment::class.java.simpleName)
         }
 
         cardViewManualEntry.setOnClickListener(){
-            val childFragment = BirdManualEntryDialogFragment(currentLatLng.latitude.toString(), currentLatLng.longitude.toString())
+            val childFragment = BirdManualEntryDialogFragment(currentLatLng.latitude.toString(), currentLatLng.longitude.toString(), tripId)
             childFragment.show(fragmentManager, BirdManualEntryDialogFragment::class.java.simpleName)
         }
 
@@ -348,7 +349,8 @@ class AddSightingFragment(private val fragmentManager : FragmentManager) : Fragm
 
             coroutineScope.launch {
                 for (i in 0 until newArrayList.size) {
-                    val xenoCantoCall = xenoCantoService.getRecordings(query = "gen:${newArrayList[i].sciName}")
+                    val xenoCantoCall =
+                        xenoCantoService.getRecordings(query = "gen:${newArrayList[i].sciName}")
 
                     val deferred = async(Dispatchers.IO) {
                         try {
@@ -361,18 +363,27 @@ class AddSightingFragment(private val fragmentManager : FragmentManager) : Fragm
                                     // Assuming you want to use the first recording URL
                                     newArrayList[i].recording = recordings!!.recordings[0].file
                                 } else {
-                                    Toast.makeText(context, "No recordings found for the specified bird.", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        context,
+                                        "No recordings found for the specified bird.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
 
                                 // Return success
                                 Unit
                             } else {
-                                Toast.makeText(context, "Error ${response.code()}", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    context,
+                                    "Error ${response.code()}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 // Return the error code
                                 response.code()
                             }
                         } catch (t: Throwable) {
-                            Toast.makeText(context, " Error ${t.message}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, " Error ${t.message}", Toast.LENGTH_SHORT)
+                                .show()
                             // Return the exception
                             t
                         }
@@ -393,7 +404,14 @@ class AddSightingFragment(private val fragmentManager : FragmentManager) : Fragm
                 }
 
                 // All requests completed (with or without errors)
-                newRecyclerView.adapter = BirdListAdapter(newArrayList, latitude.toString(), longitude.toString(), fragmentManager, mediaPlayer)
+                newRecyclerView.adapter = BirdListAdapter(
+                    newArrayList,
+                    latitude.toString(),
+                    longitude.toString(),
+                    fragmentManager,
+                    tripId,
+                    mediaPlayer
+                )
                 //code attribution
                 //the following code was taken from Stack Overflow and adapted
                 //https://stackoverflow.com/questions/5442183/using-the-animated-circle-in-an-imageview-while-loading-stuff

@@ -89,6 +89,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginEnd="131dp"
+                android:layout_marginTop="5dp"
+                android:layout_toStartOf="@+id/expand_collapse_layout"
+                android:background="@drawable/view_bg_text_bg2"
+                android:backgroundTint="@color/blue_3"
+                android:text="Add"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

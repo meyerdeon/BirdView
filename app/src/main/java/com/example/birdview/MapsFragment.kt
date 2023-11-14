@@ -6,11 +6,13 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -35,6 +37,7 @@ import kotlinx.coroutines.*
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import kotlin.math.roundToInt
 
 //import com.example.birdview.databinding.ActivityMapsBinding
 
@@ -84,6 +87,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
     var distance: Float? = null
    // private lateinit var binding: ActivityMapsBinding
 
+    private lateinit var btnCurrentLocation: ImageView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -100,6 +105,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_maps, container, false)
 
+        btnCurrentLocation = view.findViewById(R.id.btnCurrentLocation)
         dbRef = FirebaseDatabase.getInstance().getReference("Users")
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -110,6 +116,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.requireActivity())
 
         getLocationUpdates()
+
+        btnCurrentLocation.setOnClickListener {
+            setUpMap()
+        }
         return view
     }
 
@@ -179,7 +189,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
     }
 
     suspend fun getMapRange(): Float{
-        var distance = 0f
+        var distance = 50f //default value for map range incase user has not set their preference yet
         val user = FirebaseAuth.getInstance().currentUser
         dbRef.child(user?.uid.toString()).child("Settings").child("mapRangePreference").get().addOnSuccessListener {
             Log.i("firebase", "Got value ${it.value}")
@@ -360,6 +370,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
 
         val getDirections = dialog.findViewById<Button>(R.id.btnGetDirections)
         val locationName = dialog.findViewById<TextView>(R.id.txtLocationName)
+        val displayDistance = dialog.findViewById<TextView>(R.id.txtDistance)
 
         locationName.text = place
 
@@ -376,11 +387,21 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
             return
         }
 
+        //the following code was taken and adapted from StackOverflow
+        //https://stackoverflow.com/questions/6981916/how-to-calculate-distance-between-two-locations-using-their-longitude-and-latitu
+        //author: sandeepmaaram
+        //https://stackoverflow.com/users/2720929/sandeepmaaram
         fusedLocationProviderClient.lastLocation
             .addOnSuccessListener {
                 if (it != null) {
                     source = LatLng(it.latitude, it.longitude)
-
+                    val src = Location("source")
+                    val dest = Location("destination")
+                    src.set(it)
+                    dest.latitude = destination.latitude
+                    dest.longitude = destination.longitude
+                    val distance = (src).distanceTo(dest) * 0.001 //convert to kilometers
+                    displayDistance.text = "${distance.roundToInt()}km away"
                 }else{
                     Toast.makeText(this.requireContext(), "Cannot get location.", Toast.LENGTH_SHORT).show()
                 }

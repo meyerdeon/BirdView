@@ -1,6 +1,5 @@
 package com.example.birdview
 
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.location.Address
@@ -20,18 +19,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
-import com.example.birdview.databinding.FragmentObservationListDialogBinding
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import org.w3c.dom.Text
 import java.io.IOException
 import java.util.Locale
 
 
-class ObservationListDialogFragment : DialogFragment() {
+class ObservationListDialogFragment(private val tripId: String?) : DialogFragment() {
 
     private lateinit var lytInfo : LinearLayout
     private lateinit var imgShare : ImageView
@@ -145,6 +139,8 @@ class ObservationListDialogFragment : DialogFragment() {
         }
 
         val id = arguments?.getString("id")
+        //val tripId = arguments?.getString("tripId")
+        val isTripObservation = arguments?.getString("tripObservation")
 
         if (id != null) {
             try {
@@ -153,13 +149,94 @@ class ObservationListDialogFragment : DialogFragment() {
                 val user = FirebaseAuth.getInstance().currentUser
                 databaseReference.child(user?.uid.toString()).get().addOnSuccessListener {
                     if(it.exists()){
-                        for(obsr in it.child("observations").children) {
-                            //code attribution
-                            //the following code was taken from Stack Overflow and adapted
-                            //https://stackoverflow.com/questions/38232140/how-to-get-the-key-from-the-value-in-firebase
-                            //Frank van Puffelen
-                            //https://stackoverflow.com/users/209103/frank-van-puffelen
-                            val obsId = obsr.key
+                        if (!tripId.isNullOrEmpty()){
+                            for(obsr in it.child("tripcards").child(tripId!!).child("observations").children  ) {
+                                //code attribution
+                                //the following code was taken from Stack Overflow and adapted
+                                //https://stackoverflow.com/questions/38232140/how-to-get-the-key-from-the-value-in-firebase
+                                //Frank van Puffelen
+                                //https://stackoverflow.com/users/209103/frank-van-puffelen
+                                val obsId = obsr.key
+
+                                if (obsId?.lowercase().equals(id.lowercase())) {
+                                    val birdImage = obsr.child("birdImage").getValue(String::class.java)
+                                    val birdComName = obsr.child("birdComName").getValue(String::class.java)
+                                    val birdSciName = obsr.child("birdSciName").getValue(String::class.java)
+                                    recording = obsr.child("recording").getValue(String::class.java).toString()
+                                    val latitude = obsr.child("latitude").getValue(String::class.java)
+                                    val longitude = obsr.child("longitude").getValue(String::class.java)
+                                    val dateAdded = obsr.child("dateAdded").getValue(String::class.java)
+                                    if(birdImage?.contains("https://")!!){
+                                        Glide.with(imgBird.context)
+                                            .load(birdImage)
+                                            .into(imgBird)
+                                    }
+                                    else{
+                                        val image = GlobalMethods.decodeImage(birdImage)
+                                        imgBird.setImageBitmap(image)
+
+                                    }
+                                    tvBirdComName.text = "You have seen " + birdComName
+                                    tvBirdSciName.text = birdSciName
+                                    tvBirdLongitudeLatitude.text = "Latitude: " + latitude + " Longitude: " + longitude
+                                    //code attribution
+                                    //the following code was taken from Stack Overflow and adapted
+                                    //https://stackoverflow.com/questions/43862079/how-to-get-city-name-using-latitude-and-longitude-in-android
+                                    //PEHLAJ
+                                    //https://stackoverflow.com/users/6027638/pehlaj
+                                    val gcd = Geocoder(this.requireContext(), Locale.getDefault())
+                                    var addresses: List<Address>? = null
+                                    try {
+                                        if (latitude != null) {
+                                            if (longitude != null) {
+                                                addresses = gcd.getFromLocation(latitude.toDouble(), longitude.toDouble(), 1)
+                                            }
+                                        }
+                                    } catch (e: IOException) {
+                                        e.printStackTrace()
+                                    }
+                                    if (addresses != null && addresses.size > 0) {
+                                        val locality: String = addresses[0].locality
+                                        val state : String = addresses[0].adminArea
+                                        val country : String = addresses[0].countryName
+                                        tvBirdSpecifiedLocation.text = locality + ", " + state + ", " + country
+                                    }
+                                    tvBirdDateAdded.text = dateAdded
+
+                                    val mapFragment = BirdLocationMapFragment()
+                                    val bundle = Bundle()
+                                    bundle.putString("latitude", latitude)
+                                    bundle.putString("longitude", longitude)
+                                    mapFragment.arguments = bundle
+                                    childFragmentManager.beginTransaction()
+                                        .replace(R.id.mapContainer, mapFragment)
+                                        .commit()
+//
+//                                val location = LatLng(latitude, longitude)
+//                                val markerOptions = MarkerOptions().position(location)
+//                                markerOptions.title(title)
+//                                binding.map.add.addMarker(markerOptions)
+////        val location = LatLng(latitude, longitude)
+////        mMap.addMarker(MarkerOptions().position(location).title(title))
+////        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
+//                                mMap.animateCamera(
+////                                    CameraUpdateFactory.newLatLngZoom(location, 15F)
+//                                if (latitude != null) {
+//                                    if (longitude != null) {
+//                                        mapFragment.addMarker(latitude.toDouble(), longitude.toDouble(), birdComName.toString())
+//                                    }
+//                                }
+                                }
+                            }
+                        }else{
+
+                            for(obsr in it.child("observations").children  ) {
+                                //code attribution
+                                //the following code was taken from Stack Overflow and adapted
+                                //https://stackoverflow.com/questions/38232140/how-to-get-the-key-from-the-value-in-firebase
+                                //Frank van Puffelen
+                                //https://stackoverflow.com/users/209103/frank-van-puffelen
+                                val obsId = obsr.key
 
                             if (obsId?.lowercase().equals(id.lowercase())) {
                                 val birdImage = obsr.child("birdImage").getValue(String::class.java)
@@ -178,42 +255,42 @@ class ObservationListDialogFragment : DialogFragment() {
                                     val image = GlobalMethods.decodeImage(birdImage)
                                     imgBird.setImageBitmap(image)
 
-                                }
-                                tvBirdComName.text = "You have seen " + birdComName
-                                        tvBirdSciName.text = birdSciName
-                                tvBirdLongitudeLatitude.text = "Latitude: " + latitude + " Longitude: " + longitude
-                                //code attribution
-                                //the following code was taken from Stack Overflow and adapted
-                                //https://stackoverflow.com/questions/43862079/how-to-get-city-name-using-latitude-and-longitude-in-android
-                                //PEHLAJ
-                                //https://stackoverflow.com/users/6027638/pehlaj
-                                val gcd = Geocoder(this.requireContext(), Locale.getDefault())
-                                var addresses: List<Address>? = null
-                                try {
-                                    if (latitude != null) {
-                                        if (longitude != null) {
-                                            addresses = gcd.getFromLocation(latitude.toDouble(), longitude.toDouble(), 1)
-                                        }
                                     }
-                                } catch (e: IOException) {
-                                    e.printStackTrace()
-                                }
-                                if (addresses != null && addresses.size > 0) {
-                                    val locality: String = addresses[0].locality
-                                    val state : String = addresses[0].adminArea
-                                    val country : String = addresses[0].countryName
-                                    tvBirdSpecifiedLocation.text = locality + ", " + state + ", " + country
-                                }
-                                tvBirdDateAdded.text = dateAdded
+                                    tvBirdComName.text = "You have seen " + birdComName
+                                    tvBirdSciName.text = birdSciName
+                                    tvBirdLongitudeLatitude.text = "Latitude: " + latitude + " Longitude: " + longitude
+                                    //code attribution
+                                    //the following code was taken from Stack Overflow and adapted
+                                    //https://stackoverflow.com/questions/43862079/how-to-get-city-name-using-latitude-and-longitude-in-android
+                                    //PEHLAJ
+                                    //https://stackoverflow.com/users/6027638/pehlaj
+                                    val gcd = Geocoder(this.requireContext(), Locale.getDefault())
+                                    var addresses: List<Address>? = null
+                                    try {
+                                        if (latitude != null) {
+                                            if (longitude != null) {
+                                                addresses = gcd.getFromLocation(latitude.toDouble(), longitude.toDouble(), 1)
+                                            }
+                                        }
+                                    } catch (e: IOException) {
+                                        e.printStackTrace()
+                                    }
+                                    if (addresses != null && addresses.size > 0) {
+                                        val locality: String = addresses[0].locality
+                                        val state : String = addresses[0].adminArea
+                                        val country : String = addresses[0].countryName
+                                        tvBirdSpecifiedLocation.text = locality + ", " + state + ", " + country
+                                    }
+                                    tvBirdDateAdded.text = dateAdded
 
-                                val mapFragment = BirdLocationMapFragment()
-                                val bundle = Bundle()
-                                bundle.putString("latitude", latitude)
-                                bundle.putString("longitude", longitude)
-                                mapFragment.arguments = bundle
-                                childFragmentManager.beginTransaction()
-                                    .replace(R.id.mapContainer, mapFragment)
-                                    .commit()
+                                    val mapFragment = BirdLocationMapFragment()
+                                    val bundle = Bundle()
+                                    bundle.putString("latitude", latitude)
+                                    bundle.putString("longitude", longitude)
+                                    mapFragment.arguments = bundle
+                                    childFragmentManager.beginTransaction()
+                                        .replace(R.id.mapContainer, mapFragment)
+                                        .commit()
 //
 //                                val location = LatLng(latitude, longitude)
 //                                val markerOptions = MarkerOptions().position(location)
@@ -229,6 +306,7 @@ class ObservationListDialogFragment : DialogFragment() {
 //                                        mapFragment.addMarker(latitude.toDouble(), longitude.toDouble(), birdComName.toString())
 //                                    }
 //                                }
+                                }
                             }
                         }
                     }
@@ -238,7 +316,7 @@ class ObservationListDialogFragment : DialogFragment() {
                     prgLoad.visibility = View.GONE
                     imgclose.visibility = View.VISIBLE
                 }.addOnFailureListener(){
-                    Toast.makeText(context, "Observation data retrieval failed.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "User data retrieval failed.", Toast.LENGTH_SHORT).show()
                 }
             }
             catch (ex : Exception){

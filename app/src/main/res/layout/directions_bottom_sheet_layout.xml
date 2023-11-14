@@ -21,10 +21,25 @@
         android:textSize="25sp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"/>
+
+    <TextView
+        android:id="@+id/txtDistance"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
+        android:gravity="center"
+        android:paddingHorizontal="10dp"
+        android:text="  Location Name"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="20dp"/>
 
     <android.widget.Button
-        android:layout_marginTop="40dp"
         android:id="@+id/btnGetDirections"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
@@ -33,6 +48,7 @@
         android:elevation="0dp"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_alignParentBottom="true"
+        android:backgroundTint="@color/blue_3"
         android:background="@drawable/shape_button_rounded_2"
         android:text="Get directions"
         android:paddingVertical="5dp"

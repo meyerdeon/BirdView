@@ -123,7 +123,7 @@ class SignUpActivity : AppCompatActivity() {
     private fun addUserToDatabase(user_uid : String?){
         database = FirebaseDatabase.getInstance()
         databaseReference = database.getReference("Users")
-        val user = User(binding.etEmail.text.toString(), binding.etName.text.toString(), dateFormatted)
+        val user = User(binding.etEmail.text.toString(), binding.etName.text.toString(), dateFormatted, null)
         databaseReference.child(user_uid.toString()).setValue(user).addOnCompleteListener() {
             //code attribution
             //the following code was taken from Stack Overflow and adapted

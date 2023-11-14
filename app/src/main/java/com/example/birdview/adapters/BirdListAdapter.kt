@@ -26,8 +26,9 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
-class BirdListAdapter(private val birds: List<BirdWithImage>, private val latitude : String, private val longitude : String, private val fragmentManager : FragmentManager, private val mediaPlayer : MediaPlayer) : RecyclerView.Adapter<BirdListAdapter.ViewHolder>() {
-
+class BirdListAdapter(private val birds: List<BirdWithImage>, private val latitude : String,
+                      private val longitude : String, private val fragmentManager : FragmentManager,
+                      private val tripId: String?, private val mediaPlayer : MediaPlayer) : RecyclerView.Adapter<BirdListAdapter.ViewHolder>() {
     private var previousViewHolder: ViewHolder? = null
     private var currentViewHolder: ViewHolder? = null
     private var lastClickTime: Long = 0
@@ -95,7 +96,7 @@ class BirdListAdapter(private val birds: List<BirdWithImage>, private val latitu
         //https://www.geeksforgeeks.org/how-to-apply-onclicklistener-to-recyclerview-items-in-android/
         holder.itemView.setOnClickListener {v ->
 
-            val childFragment = BirdAddDialogFragment()
+            val childFragment = BirdAddDialogFragment(tripId)
             childFragment.show(fragmentManager, BirdAddDialogFragment::class.java.simpleName)
             val bundle = Bundle()
             bundle.putString("latitude", latitude)

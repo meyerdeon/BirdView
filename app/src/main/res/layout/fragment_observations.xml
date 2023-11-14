@@ -53,8 +53,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:paddingBottom="56dp"
-
-                android:layout_marginBottom="?android:attr/actionBarSize"
                 tools:itemCount="10"
                 tools:listitem="@layout/observation_item_layout"
                 tools:orientation="vertical"

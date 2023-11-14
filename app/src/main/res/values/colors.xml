@@ -6,14 +6,17 @@
     <color name="blue">#3d59ab</color>
     <color name="cobalt_blue">#0047AB</color>
     <color name="light_grey">#D3D3D3</color>
-    <color name="light_grey1">#919191</color>
+    <color name="light_grey2">#CDE3E2E2</color>
+    <color name="light_grey1">#F3919191</color>
     <color name="dark_grey">#5A5A5A</color>
+    <color name="light_beige">#EEEBE7</color>
 
     <color name="blue_1">#0f52ba</color>
     <color name="blue_2">#1861D1</color>
     <color name="blue_3">#2E7BF1</color>
     <color name="blue_4">#408BFF</color>
     <color name="font_grey">#222222</color>
+    <color name="font_grey2">#BC222222</color>
     <color name="hint_color">#805A5A5A</color>
     <color name="light_blue_600">#FF039BE5</color>
     <color name="light_blue_900">#FF01579B</color>
