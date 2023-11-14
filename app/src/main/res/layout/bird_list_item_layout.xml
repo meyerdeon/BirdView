@@ -74,10 +74,6 @@
                 android:layout_marginTop="120dp"
                 android:orientation="vertical">
             </LinearLayout>
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
 
             <android.widget.Button
                 android:id="@+id/btn_play_audio"
@@ -86,16 +82,18 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/shape_button_rounded"
+                android:elevation="20dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="95dp"
+                android:drawableStart="@drawable/record_sound_icon"
+                android:background="@drawable/view_bg_text_bg2"
+                android:backgroundTint="@color/white"
                 android:fontFamily="@font/poppins_medium"
-                android:padding="8dp"
+                android:padding="5dp"
                 android:text="Play Audio"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
+                android:textColor="@color/new_grey"
+                android:textSize="18sp" />
         </RelativeLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
