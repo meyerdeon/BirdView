@@ -33,6 +33,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -43,11 +44,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-class BirdListDialogFragment(private val fragmentManager : FragmentManager) : Fragment() {
+class AddSightingFragment(private val fragmentManager : FragmentManager) : Fragment() {
     private lateinit var newRecyclerView : RecyclerView
     companion object {
         private const val REQUEST_LOCATION_PERMISSION = 101
     }
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
     // private var newArrayList = mutableListOf<ActualObservation>()
     //private var urls = mutableListOf<String>()
     private lateinit var text : TextView
@@ -155,54 +157,59 @@ class BirdListDialogFragment(private val fragmentManager : FragmentManager) : Fr
 //    }
 
     fun findBirds(latitude : Double, longitude: Double){
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.ebird.org/v2/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        try{
+            val retrofit = Retrofit.Builder()
+                .baseUrl("https://api.ebird.org/v2/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
 
-        val eBirdApiService = retrofit.create(EBirdApiService::class.java)
+            val eBirdApiService = retrofit.create(EBirdApiService::class.java)
 //        val latitude = -25.78619571078393 // Replace with your current latitude
 //        val longitude = 28.29921991113278 // Replace with your current longitude
-        var apiKey = "p7epg6jpkgis" // Replace with your eBird API key
+            var apiKey = "p7epg6jpkgis" // Replace with your eBird API key
 
-        val call =
-            eBirdApiService.getBirdObservations(latitude, longitude, 10, 30, 30, "json", apiKey)
-        val newArrayList = arrayListOf<BirdWithImage>()
-        call.enqueue(object : Callback<List<Bird>> {
-            override fun onResponse(
-                call: Call<List<Bird>>,
-                response: Response<List<Bird>>
-            ) {
-                if (response.isSuccessful) {
-                    val observations = response.body()
-                    if (observations != null) {
-                        for (obs in observations) {
-                            newArrayList.add(
-                                BirdWithImage(
-                                    obs.speciesCode,
-                                    obs.comName,
-                                    obs.sciName,
-                                    null,
-                                    null
+            val call =
+                eBirdApiService.getBirdObservations(latitude, longitude, 10, 30, 30, "json", apiKey)
+            val newArrayList = arrayListOf<BirdWithImage>()
+            call.enqueue(object : Callback<List<Bird>> {
+                override fun onResponse(
+                    call: Call<List<Bird>>,
+                    response: Response<List<Bird>>
+                ) {
+                    if (response.isSuccessful) {
+                        val observations = response.body()
+                        if (observations != null) {
+                            for (obs in observations) {
+                                newArrayList.add(
+                                    BirdWithImage(
+                                        obs.speciesCode,
+                                        obs.comName,
+                                        obs.sciName,
+                                        null,
+                                        null
+                                    )
                                 )
-                            )
+                            }
                         }
+                        searchImagesByText(newArrayList, latitude, longitude)
+                        //   newRecyclerView.adapter = BirdAdapter(newArrayList)
+                        // Process the bird observations here
+                    } else {
+                        Toast.makeText(context, "Error processing birds", Toast.LENGTH_SHORT).show()
+                        // Handle error
                     }
-                    searchImagesByText(newArrayList, latitude, longitude)
-                    //   newRecyclerView.adapter = BirdAdapter(newArrayList)
-                    // Process the bird observations here
-                } else {
-                    Toast.makeText(context, "Error processing birds", Toast.LENGTH_SHORT).show()
-                    // Handle error
+
+                    //displayData()
                 }
 
-                //displayData()
-            }
-
-            override fun onFailure(call: Call<List<Bird>>, t: Throwable) {
-                Toast.makeText(context, "Error processing birds "+t.message, Toast.LENGTH_SHORT).show()
-            }
-        })
+                override fun onFailure(call: Call<List<Bird>>, t: Throwable) {
+                    Toast.makeText(context, "Error processing birds "+t.message, Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
+        catch(e: Exception){
+            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+        }
     }
     fun searchImagesByText(newArrayList: ArrayList<BirdWithImage>, latitude : Double, longitude: Double) {
 //        val apiKey = "d53d32be5b38ab4a962a8f7f433a5d57" // Replace with your Flickr API key
@@ -258,143 +265,158 @@ class BirdListDialogFragment(private val fragmentManager : FragmentManager) : Fr
 //                }
 //            })
 //        }
-        val apiKey = "d53d32be5b38ab4a962a8f7f433a5d57" // Replace with your Flickr API key
-        val flickrService = Retrofit.Builder()
-            .baseUrl("https://api.flickr.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(FlickrService::class.java)
-        val deferredList = ArrayList<Deferred<Any>>() // Use Deferred<Any> to handle both success and failure
+        try{
+            val apiKey = "d53d32be5b38ab4a962a8f7f433a5d57" // Replace with your Flickr API key
+            val flickrService = Retrofit.Builder()
+                .baseUrl("https://api.flickr.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(FlickrService::class.java)
+            val deferredList = ArrayList<Deferred<Any>>() // Use Deferred<Any> to handle both success and failure
 
-        val coroutineScope = CoroutineScope(Dispatchers.Main)
+//            val coroutineScope = CoroutineScope(Dispatchers.Main)
 
-        for (i in 0 until newArrayList.size) {
-            val flickrCall = flickrService.searchPhotos(apiKey = apiKey, text = newArrayList[i].sciName)
-
-            val deferred = coroutineScope.async(Dispatchers.IO) {
-                try {
-                    val response = flickrCall.execute()
-
-                    if (response.isSuccessful) {
-                        val flickrResponse = response.body()
-
-                        val imageUrls = flickrResponse?.photos?.photo?.map { photo ->
-                            "https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_m.jpg"
-                        }
-
-                        if (imageUrls != null && imageUrls.isNotEmpty()) {
-                            newArrayList[i].url = imageUrls.first()
-                        }
-
-                        // Return a success indicator
-                        Unit
-                    } else {
-                        // Handle Flickr API error
-                        Toast.makeText(context, "Error: ${response.code()}", Toast.LENGTH_SHORT).show()
-                        // Return the error as an exception
-                        throw RuntimeException("Flickr API error: ${response.code()}")
-                    }
-                } catch (t: Throwable) {
-                    // Handle network error
-                    Toast.makeText(context, "Network Error: ${t.message}", Toast.LENGTH_SHORT).show()
-                    // Return the error as an exception
-                    throw t
-                }
-            }
-
-            deferredList.add(deferred)
-        }
-
-        coroutineScope.launch {
-            deferredList.awaitAll()
-
-            // Check for any errors
-            if (deferredList.any { it.isCompleted && it.getCompleted() is Throwable }) {
-                // Handle errors if needed
-                Toast.makeText(context, "Some requests failed", Toast.LENGTH_SHORT).show()
-            }
-            searchRecordings(newArrayList, latitude, longitude)
-//            getRecordings(newArrayList)
-            // All requests completed (with or without errors)
-//            newArrayList.add(0, ActualObservation("Unknown", "Unknown", "", "", ""))
-//            newRecyclerView.adapter = BirdAdapter(newArrayList)
-//            prgLoad.visibility = View.GONE
-//            text.text = "Click on a bird to add it to your observation list."
-        }
-    }
-
-    fun searchRecordings(newArrayList: ArrayList<BirdWithImage>, latitude : Double, longitude: Double){
-        val xenoCantoService = Retrofit.Builder()
-            .baseUrl("https://xeno-canto.org/api/2/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(XenoCantoService::class.java)
-        val deferredList = ArrayList<Deferred<Any>>() // Use Deferred<Any> to handle both success and failure
-
-        val coroutineScope = CoroutineScope(Dispatchers.Main)
-
-        coroutineScope.launch {
             for (i in 0 until newArrayList.size) {
-                val xenoCantoCall = xenoCantoService.getRecordings(query = "gen:${newArrayList[i].sciName}")
+                val flickrCall = flickrService.searchPhotos(apiKey = apiKey, text = newArrayList[i].sciName)
 
-                val deferred = async(Dispatchers.IO) {
+                val deferred = coroutineScope.async(Dispatchers.IO) {
                     try {
-                        val response = xenoCantoCall.execute()
+                        val response = flickrCall.execute()
 
                         if (response.isSuccessful) {
-                            val recordings = response.body()
+                            val flickrResponse = response.body()
 
-                            if ((recordings?.numRecordings ?: 0) > 0) {
-                                // Assuming you want to use the first recording URL
-                                newArrayList[i].recording = recordings!!.recordings[0].file
-                            } else {
-                                Toast.makeText(context, "No recordings found for the specified bird.", Toast.LENGTH_SHORT).show()
+                            val imageUrls = flickrResponse?.photos?.photo?.map { photo ->
+                                "https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}_m.jpg"
                             }
 
-                            // Return success
+                            if (imageUrls != null && imageUrls.isNotEmpty()) {
+                                newArrayList[i].url = imageUrls.first()
+                            }
+
+                            // Return a success indicator
                             Unit
                         } else {
-                            Toast.makeText(context, "Error ${response.code()}", Toast.LENGTH_SHORT).show()
-                            // Return the error code
-                            response.code()
+                            // Handle Flickr API error
+                            Toast.makeText(context, "Error: ${response.code()}", Toast.LENGTH_SHORT).show()
+                            // Return the error as an exception
+                            throw RuntimeException("Flickr API error: ${response.code()}")
                         }
                     } catch (t: Throwable) {
-                        Toast.makeText(context, " Error ${t.message}", Toast.LENGTH_SHORT).show()
-                        // Return the exception
-                        t
+                        // Handle network error
+                        Toast.makeText(context, "Network Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                        // Return the error as an exception
+                        throw t
                     }
                 }
 
                 deferredList.add(deferred)
-
-                // Introduce a delay of 1 second between requests
-                delay(1000)
             }
 
-            deferredList.awaitAll()
+            coroutineScope.launch {
+                deferredList.awaitAll()
 
-            // Check for any errors
-            if (deferredList.any { it.isCompleted && it.getCompleted() is Throwable }) {
-                // Handle errors if needed
-                Toast.makeText(context, "Some requests failed", Toast.LENGTH_SHORT).show()
+                // Check for any errors
+                if (deferredList.any { it.isCompleted && it.getCompleted() is Throwable }) {
+                    // Handle errors if needed
+                    Toast.makeText(context, "Some requests failed", Toast.LENGTH_SHORT).show()
+                }
+                searchRecordings(newArrayList, latitude, longitude)
+//            getRecordings(newArrayList)
+                // All requests completed (with or without errors)
+//            newArrayList.add(0, ActualObservation("Unknown", "Unknown", "", "", ""))
+//            newRecyclerView.adapter = BirdAdapter(newArrayList)
+//            prgLoad.visibility = View.GONE
+//            text.text = "Click on a bird to add it to your observation list."
             }
+        }
+        catch(e:Exception){
+            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+        }
+    }
 
-            // All requests completed (with or without errors)
-            newRecyclerView.adapter = BirdListAdapter(newArrayList, latitude.toString(), longitude.toString(), fragmentManager, mediaPlayer)
-            //code attribution
-            //the following code was taken from Stack Overflow and adapted
-            //https://stackoverflow.com/questions/5442183/using-the-animated-circle-in-an-imageview-while-loading-stuff
-            //WSBT
-            //https://stackoverflow.com/users/1032613/wsbt
-            prgLoad.visibility = View.GONE
-            text.text = "Click on a bird to add it to your observation list."
+    fun searchRecordings(newArrayList: ArrayList<BirdWithImage>, latitude : Double, longitude: Double){
+        try{
+            val xenoCantoService = Retrofit.Builder()
+                .baseUrl("https://xeno-canto.org/api/2/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(XenoCantoService::class.java)
+            val deferredList = ArrayList<Deferred<Any>>() // Use Deferred<Any> to handle both success and failure
+
+//            val coroutineScope = CoroutineScope(Dispatchers.Main)
+
+            coroutineScope.launch {
+                for (i in 0 until newArrayList.size) {
+                    val xenoCantoCall = xenoCantoService.getRecordings(query = "gen:${newArrayList[i].sciName}")
+
+                    val deferred = async(Dispatchers.IO) {
+                        try {
+                            val response = xenoCantoCall.execute()
+
+                            if (response.isSuccessful) {
+                                val recordings = response.body()
+
+                                if ((recordings?.numRecordings ?: 0) > 0) {
+                                    // Assuming you want to use the first recording URL
+                                    newArrayList[i].recording = recordings!!.recordings[0].file
+                                } else {
+                                    Toast.makeText(context, "No recordings found for the specified bird.", Toast.LENGTH_SHORT).show()
+                                }
+
+                                // Return success
+                                Unit
+                            } else {
+                                Toast.makeText(context, "Error ${response.code()}", Toast.LENGTH_SHORT).show()
+                                // Return the error code
+                                response.code()
+                            }
+                        } catch (t: Throwable) {
+                            Toast.makeText(context, " Error ${t.message}", Toast.LENGTH_SHORT).show()
+                            // Return the exception
+                            t
+                        }
+                    }
+
+                    deferredList.add(deferred)
+
+                    // Introduce a delay of 1 second between requests
+                    delay(1000)
+                }
+
+                deferredList.awaitAll()
+
+                // Check for any errors
+                if (deferredList.any { it.isCompleted && it.getCompleted() is Throwable }) {
+                    // Handle errors if needed
+                    Toast.makeText(context, "Some requests failed", Toast.LENGTH_SHORT).show()
+                }
+
+                // All requests completed (with or without errors)
+                newRecyclerView.adapter = BirdListAdapter(newArrayList, latitude.toString(), longitude.toString(), fragmentManager, mediaPlayer)
+                //code attribution
+                //the following code was taken from Stack Overflow and adapted
+                //https://stackoverflow.com/questions/5442183/using-the-animated-circle-in-an-imageview-while-loading-stuff
+                //WSBT
+                //https://stackoverflow.com/users/1032613/wsbt
+                prgLoad.visibility = View.GONE
+                text.text = "Click on a bird to add it to your observation list."
+            }
+        }
+        catch(e:Exception){
+            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-
-        // Release MediaPlayer when the fragment is being destroyed
-        mediaPlayer.release()
+        try{
+            super.onDestroy()
+            coroutineScope.cancel()
+            // Release MediaPlayer when the fragment is being destroyed
+            mediaPlayer.release()
+        }
+        catch (e:Exception){
+            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.example.birdview
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -32,6 +33,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
+import com.example.birdview.api_interfaces.ImagePickerCallback
 import com.example.birdview.databinding.ActivitySignInBinding
 import com.example.birdview.databinding.FragmentBirdManualEntryDialogBinding
 import com.example.birdview.databinding.FragmentObservationListDialogBinding
@@ -46,7 +49,8 @@ import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class BirdManualEntryDialogFragment(private val latitude : String, private val longitude : String) : DialogFragment() {
+class BirdManualEntryDialogFragment(private val latitude : String, private val longitude : String) : DialogFragment(),
+    ImagePickerCallback {
     companion object {
         const val REQUEST_IMAGE_CAPTURE = 101
         const val REQUEST_OPEN_IMAGE = 102
@@ -320,10 +324,15 @@ class BirdManualEntryDialogFragment(private val latitude : String, private val l
         }
 
     private fun requestImagePickerPermissions() {
-        val permissionsToRequest = arrayOf(getReadStoragePermission())
+        try{
+            val permissionsToRequest = arrayOf(getReadStoragePermission())
 
-        // Request multiple permissions to access images
-        requestMediaPermissionsLauncher.launch(permissionsToRequest)
+            // Request multiple permissions to access images
+            requestMediaPermissionsLauncher.launch(permissionsToRequest)
+        }
+        catch (e:Exception){
+            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private val audioPermissions = arrayOf(
@@ -336,7 +345,7 @@ class BirdManualEntryDialogFragment(private val latitude : String, private val l
                 startRecording()
             } else {
                 // Handle permission denial
-                Toast.makeText(requireContext(), "Audio permissions have been denied", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Audio permissions have been denied", Toast.LENGTH_SHORT).show()
             }
         }
     private fun requestAudioPermissions() {
@@ -347,13 +356,18 @@ class BirdManualEntryDialogFragment(private val latitude : String, private val l
     }
 
     private fun openImagePicker() {
+        try{
+            getContentLauncher.launch("image/*")
+        }
+        catch (e:Exception){
+            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+        }
         // Launch the image picker
         // Launch the image picker
-        getContentLauncher.launch("image/*")
     }
 
     private fun getReadStoragePermission(): String {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             Manifest.permission.READ_MEDIA_IMAGES
         } else {
             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -374,26 +388,70 @@ class BirdManualEntryDialogFragment(private val latitude : String, private val l
         return permissions[permission] == true
     }
 
+    override fun onImagePickerResult(uri: Uri?) {
+        // Handle the selected image URI as needed
+        try {
+//            Toast.makeText(context, "Testing"+ uri.toString(), Toast.LENGTH_SHORT).show()
+            val contentResolver = requireContext().contentResolver
+            val inputStream = uri?.let { contentResolver.openInputStream(it) }
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            image_bird.background = null
+            image_bird.setImageBitmap(bitmap)
+            encodedBitmap = GlobalMethods.encodeImage(bitmap)
+        } catch (e: IOException) {
+            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private val getContentLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            // Handle the selected image URI as needed
-            try {
-                val contentResolver = requireContext().contentResolver
-                val inputStream = uri?.let { contentResolver.openInputStream(it) }
-                val bitmap = BitmapFactory.decodeStream(inputStream)
-                image_bird.background = null
-                image_bird.setImageBitmap(bitmap)
-                encodedBitmap = GlobalMethods.encodeImage(bitmap)
-            } catch (e: IOException) {
-                e.printStackTrace()
+            // Call the callback method implemented in the hosting DialogFragment
+            if(uri==null){
+                (parentFragment as? ImagePickerCallback)?.onImagePickerResult(uri)
             }
-//                // Do something with the selected image URI, such as displaying it or processing it.
-//            }
+            else{
+                onImagePickerResult(uri)
+            }
         }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        try{
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+            if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    dispatchTakePictureIntent()
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Camera permission denied. Cannot open camera.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+        catch (e:Exception){
+            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+        }
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
+        try{
+            if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+                val imageBitmap = data?.extras?.get("data") as Bitmap
+                image_bird.background = null
+                image_bird.setImageBitmap(imageBitmap)
+                encodedBitmap = GlobalMethods.encodeImage(imageBitmap)
+                // Do something with the captured image, such as displaying it or saving it.
+            }
+        }
+        catch (e:Exception){
+            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+        }
 //        if (requestCode == REQUEST_OPEN_IMAGE && resultCode == Activity.RESULT_OK) {
 //            if (data != null) {
 //                val selectedImageUri: Uri? = data.data
@@ -411,21 +469,19 @@ class BirdManualEntryDialogFragment(private val latitude : String, private val l
 //            }
 //        }
 //        else{
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            val imageBitmap = data?.extras?.get("data") as Bitmap
-            image_bird.background = null
-            image_bird.setImageBitmap(imageBitmap)
-            encodedBitmap = GlobalMethods.encodeImage(imageBitmap)
-            // Do something with the captured image, such as displaying it or saving it.
-        }
 //        }
     }
 
     private fun toggleRecording() {
-        if (!isRecording) {
-            requestAudioPermissions()
-        } else {
-            stopRecording()
+        try{
+            if (!isRecording) {
+                requestAudioPermissions()
+            } else {
+                stopRecording()
+            }
+        }
+        catch(e:Exception){
+            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -489,16 +545,21 @@ class BirdManualEntryDialogFragment(private val latitude : String, private val l
     }
 
     private fun stopPlaying(){
-        mediaPlayer?.apply {
-            stop()
-            release()
-        }
-        playbackChronometer.stop()
-        playbackChronometer.base = SystemClock.elapsedRealtime()
-        mediaPlayer = null
+        try{
+            mediaPlayer?.apply {
+                stop()
+                release()
+            }
+            playbackChronometer.stop()
+            playbackChronometer.base = SystemClock.elapsedRealtime()
+            mediaPlayer = null
 
-        tv_play_sound.setText("Play Sound")
-        isPlaying = false
+            tv_play_sound.setText("Play Sound")
+            isPlaying = false
+        }
+        catch (e:Exception){
+            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun playAudio(file: File) {
@@ -553,5 +614,7 @@ class BirdManualEntryDialogFragment(private val latitude : String, private val l
         mediaPlayer = null
         mediaRecorder?.release()
         mediaRecorder = null
+        playbackChronometer.stop()
+        recordingChronometer.stop()
     }
 }

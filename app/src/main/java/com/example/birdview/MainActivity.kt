@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.miObservations -> replaceFragment(ObservationsFragment())
                 R.id.miTripCards -> replaceFragment(TripCardsFragment())
                 R.id.miSettings -> replaceFragment(SettingsFragment())
-                R.id.miAddSighting -> replaceFragment(BirdListDialogFragment(supportFragmentManager))
+                R.id.miAddSighting -> replaceFragment(AddSightingFragment(supportFragmentManager))
             }
             true
         }

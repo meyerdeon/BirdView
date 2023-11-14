@@ -111,4 +111,5 @@ class ObservationsFragment : Fragment() {
             Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
         }
     }
+
 }

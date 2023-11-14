@@ -29,6 +29,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.birdview.api_interfaces.ImagePickerCallback
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -39,7 +40,7 @@ import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class UnidentifiedDialogFragment(private val latitude : String, private val longitude : String) : BottomSheetDialogFragment() {
+class UnidentifiedDialogFragment(private val latitude : String, private val longitude : String) : BottomSheetDialogFragment(), ImagePickerCallback {
 
     companion object {
         const val REQUEST_IMAGE_CAPTURE = 101
@@ -300,21 +301,47 @@ class UnidentifiedDialogFragment(private val latitude : String, private val long
         return permissions[permission] == true
     }
 
+//    private val getContentLauncher =
+//        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+//            // Handle the selected image URI as needed
+//            try {
+//                val contentResolver = requireContext().contentResolver
+//                val inputStream = uri?.let { contentResolver.openInputStream(it) }
+//                val bitmap = BitmapFactory.decodeStream(inputStream)
+//                image_bird.background = null
+//                image_bird.setImageBitmap(bitmap)
+//                encodedBitmap = GlobalMethods.encodeImage(bitmap)
+//            } catch (e: IOException) {
+//                e.printStackTrace()
+//            }
+////                // Do something with the selected image URI, such as displaying it or processing it.
+////            }
+//        }
+
+    override fun onImagePickerResult(uri: Uri?) {
+        // Handle the selected image URI as needed
+        try {
+//            Toast.makeText(context, "Testing"+ uri.toString(), Toast.LENGTH_SHORT).show()
+            val contentResolver = requireContext().contentResolver
+            val inputStream = uri?.let { contentResolver.openInputStream(it) }
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            image_bird.background = null
+            image_bird.setImageBitmap(bitmap)
+            encodedBitmap = GlobalMethods.encodeImage(bitmap)
+        } catch (e: IOException) {
+            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private val getContentLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            // Handle the selected image URI as needed
-            try {
-                val contentResolver = requireContext().contentResolver
-                val inputStream = uri?.let { contentResolver.openInputStream(it) }
-                val bitmap = BitmapFactory.decodeStream(inputStream)
-                image_bird.background = null
-                image_bird.setImageBitmap(bitmap)
-                encodedBitmap = GlobalMethods.encodeImage(bitmap)
-            } catch (e: IOException) {
-                e.printStackTrace()
+            // Call the callback method implemented in the hosting DialogFragment
+            if(uri==null){
+                (parentFragment as? ImagePickerCallback)?.onImagePickerResult(uri)
             }
-//                // Do something with the selected image URI, such as displaying it or processing it.
-//            }
+            else{
+                onImagePickerResult(uri)
+            }
         }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -479,5 +506,7 @@ class UnidentifiedDialogFragment(private val latitude : String, private val long
         mediaPlayer = null
         mediaRecorder?.release()
         mediaRecorder = null
+        playbackChronometer.stop()
+        recordingChronometer.stop()
     }
 }

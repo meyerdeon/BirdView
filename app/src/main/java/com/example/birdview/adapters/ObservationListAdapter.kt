@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.birdview.BirdListDialogFragment
 import com.example.birdview.GlobalMethods
 import com.example.birdview.Observation
 import com.example.birdview.ObservationListDialogFragment
