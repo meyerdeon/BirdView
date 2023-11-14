@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.example.birdview.adapters.ObservationListAdapter
 import com.example.birdview.api_interfaces.HotspotsApiInterface
 import com.example.birdview.models.BirdHotspot
 import com.google.android.gms.location.*
@@ -114,7 +115,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
         mapFragment.getMapAsync(this)
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.requireActivity())
-
+        getUserData()
         getLocationUpdates()
 
         btnCurrentLocation.setOnClickListener {
@@ -241,6 +242,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
         mMap.addMarker(markerOptions)
     }
 
+    private fun placeMarkerOnMap(currentLatLng: LatLng, locatioName: String, num: Int) {
+        val markerOptions = MarkerOptions().position(currentLatLng)
+        markerOptions.title("$locatioName")
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+        mMap.addMarker(markerOptions)
+    }
+
     private fun placeMarkerOnMap(currentLatLng: LatLng, num: Int) {
         val markerOptions = MarkerOptions().position(currentLatLng)
         markerOptions.title("My location")
@@ -337,7 +345,43 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickList
             null /* Looper */
         )
     }
+    private fun getUserData(){
+        try{
 
+
+            val user = FirebaseAuth.getInstance().currentUser
+            val database = FirebaseDatabase.getInstance()
+            val databaseReference = database.getReference("Users")
+            databaseReference.child(user?.uid.toString()).get().addOnSuccessListener {
+                if(it.exists()){
+                    for(obsr in it.child("observations").children){
+                        //code attribution
+                        //the following code was taken from Stack Overflow and adapted
+                        //https://stackoverflow.com/questions/38232140/how-to-get-the-key-from-the-value-in-firebase
+                        //Frank van Puffelen
+                        //https://stackoverflow.com/users/209103/frank-van-puffelen
+
+                        val latitude = obsr.child("latitude").getValue(String::class.java)
+                        val longitude = obsr.child("longitude").getValue(String::class.java)
+
+                        placeMarkerOnMap(LatLng(latitude!!.toDouble(), longitude!!.toDouble()), "My observation",  0)
+                    }
+                }
+            }.addOnCompleteListener(){
+                if (it.isComplete){
+
+                }
+                else{
+                    Toast.makeText(context, "User data retrieval failed.", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener(){
+                Toast.makeText(context, "Failure", Toast.LENGTH_SHORT).show()
+            }
+        }
+        catch(ex : Exception){
+            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+        }
+    }
     // stop location updates
     private fun stopLocationUpdates() {
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
