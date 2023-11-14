@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.view.View
+import android.widget.Chronometer
 import android.widget.Toast
 import com.example.birdview.adapters.ObservationListAdapter
 import com.google.firebase.auth.FirebaseAuth
@@ -12,6 +13,7 @@ import java.io.ByteArrayOutputStream
 
 class GlobalMethods {
     companion object{
+
         public fun encodeImage(bm: Bitmap): String? {
             val baos = ByteArrayOutputStream()
             bm.compress(Bitmap.CompressFormat.JPEG, 100, baos)

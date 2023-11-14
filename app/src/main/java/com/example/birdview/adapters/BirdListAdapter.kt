@@ -9,7 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Chronometer
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
@@ -22,6 +24,7 @@ import com.example.birdview.UnidentifiedDialogFragment
 import com.example.birdview.models.BirdWithImage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -93,6 +96,7 @@ class BirdListAdapter(private val birds: List<BirdWithImage>, private val latitu
         Glide.with(holder.image.context)
             .load(bird.url)
             .into(holder.image)
+
         //https://www.geeksforgeeks.org/how-to-apply-onclicklistener-to-recyclerview-items-in-android/
         holder.itemView.setOnClickListener {v ->
 
@@ -123,9 +127,7 @@ class BirdListAdapter(private val birds: List<BirdWithImage>, private val latitu
                 //  previousViewHolder?.let { notifyItemChanged(it.adapterPosition) }
                 if(holder.playAudio.text.equals("Play Audio")){
                     holder.playAudio.setText("Stop Audio")
-                    // Create a new MediaPlayer for the current item
 
-                    // Create a new MediaPlayer for the current item
                     if (mediaPlayer.isPlaying) {
                         mediaPlayer.stop()
                         mediaPlayer.reset()
