@@ -91,7 +91,7 @@ class ObservationListDialogFragment : DialogFragment() {
             // Handle any exceptions during preparation
             btnPlayAudio.text = "Play Audio"
             mediaPlayer.reset()
-            Toast.makeText(context, "An error has occur. Error: ${e}. Please note rapid clicking will not be allowed.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "An error has occur. Error: ${e}", Toast.LENGTH_SHORT).show()
             e.printStackTrace()
         }
     }
@@ -179,7 +179,7 @@ class ObservationListDialogFragment : DialogFragment() {
                                     imgBird.setImageBitmap(image)
 
                                 }
-                                tvBirdComName.text = "You have seen " + birdComName + recording
+                                tvBirdComName.text = "You have seen " + birdComName
                                         tvBirdSciName.text = birdSciName
                                 tvBirdLongitudeLatitude.text = "Latitude: " + latitude + " Longitude: " + longitude
                                 //code attribution
@@ -238,7 +238,7 @@ class ObservationListDialogFragment : DialogFragment() {
                     prgLoad.visibility = View.GONE
                     imgclose.visibility = View.VISIBLE
                 }.addOnFailureListener(){
-                    Toast.makeText(context, "User data retrieval failed.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Observation data retrieval failed.", Toast.LENGTH_SHORT).show()
                 }
             }
             catch (ex : Exception){

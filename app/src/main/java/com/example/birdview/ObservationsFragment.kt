@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +21,7 @@ class ObservationsFragment : Fragment() {
     private lateinit var newArrayList : ArrayList<Observation>
     private lateinit var binding: FragmentObservationsBinding
     private lateinit var prgLoad : ProgressBar
+    private lateinit var tv_data : TextView
 //    lateinit var imageId : Array<Int>
 //    lateinit var birdName : Array<String>
 //    lateinit var birdScientificName : Array<String>
@@ -38,6 +40,7 @@ class ObservationsFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_observations, container, false)
         prgLoad = view.findViewById(R.id.prgLoad)
+        tv_data = view.findViewById(R.id.tv_data)
 //        imageId = arrayOf(R.drawable.image1, R.drawable.image2, R.drawable.image1, R.drawable.image2, R.drawable.image1)
 //        birdName = arrayOf("Bird Name", "Bird Name", "Bird Name", "Bird Name", "Bird Name")
 //        birdScientificName = arrayOf("Scientific Bird Name", "Scientific Bird Name", "Scientific Bird Name", "Scientific Bird Name", "Scientific Bird Name")
@@ -63,6 +66,7 @@ class ObservationsFragment : Fragment() {
 
     private fun getUserData(){
         try{
+            tv_data.visibility = View.GONE
             newArrayList = arrayListOf()
             val user = FirebaseAuth.getInstance().currentUser
             val database = FirebaseDatabase.getInstance()
@@ -90,6 +94,10 @@ class ObservationsFragment : Fragment() {
             }.addOnCompleteListener(){
                 if (it.isComplete){
                     prgLoad.visibility = View.GONE
+                    if(newArrayList.size == 0){
+                        tv_data.text = "No Observations Found"
+                        tv_data.visibility = View.VISIBLE
+                    }
                     newRecyclerView.adapter = ObservationListAdapter(newArrayList)
                 }
                 else{
