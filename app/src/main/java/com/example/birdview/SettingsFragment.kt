@@ -23,8 +23,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import java.io.IOException
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
@@ -202,7 +200,7 @@ class SettingsFragment : Fragment() {
         val imgUploadImage = dialog.findViewById<LinearLayout>(R.id.lyt_upload_image)
         val btnUpload = dialog.findViewById<Button>(R.id.btnUpload)
         val btnCancel = dialog.findViewById<Button>(R.id.btnCancel)
-        img_profile_picture = dialog.findViewById<ImageView>(R.id.imgProfilePicture)
+        img_profile_picture = dialog.findViewById<ImageView>(R.id.img_bird)
 
 
         imgTakePicture.setOnClickListener {

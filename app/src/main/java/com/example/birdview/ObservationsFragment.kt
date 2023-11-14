@@ -98,7 +98,7 @@ class ObservationsFragment : Fragment() {
                         tv_data.text = "No Observations Found"
                         tv_data.visibility = View.VISIBLE
                     }
-                    newRecyclerView.adapter = ObservationListAdapter(newArrayList1, 1, null)
+                    newRecyclerView.adapter = ObservationListAdapter(newArrayList, 1, null)
                 }
                 else{
                     Toast.makeText(context, "User data retrieval failed.", Toast.LENGTH_SHORT).show()

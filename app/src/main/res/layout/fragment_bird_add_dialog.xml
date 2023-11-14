@@ -17,7 +17,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            android:id="@+id/imgProfilePicture"
+            android:id="@+id/img_bird"
             android:src="@drawable/image1"/>
 
         <TextView

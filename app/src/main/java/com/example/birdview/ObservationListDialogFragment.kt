@@ -1,6 +1,5 @@
 package com.example.birdview
 
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.location.Address
@@ -20,13 +19,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
-import com.example.birdview.databinding.FragmentObservationListDialogBinding
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import org.w3c.dom.Text
 import java.io.IOException
 import java.util.Locale
 
@@ -110,7 +104,7 @@ class ObservationListDialogFragment(private val tripId: String?) : DialogFragmen
         imgShare = view.findViewById(R.id.img_share)
         btnPlayAudio = view.findViewById(R.id.btn_play_audio)
         prgLoad = view.findViewById(R.id.prgLoad)
-        imgBird = view.findViewById(R.id.imgProfilePicture)
+        imgBird = view.findViewById(R.id.img_bird)
         tvBirdDateAdded = view.findViewById(R.id.tv_bird_date_added)
         tvBirdComName = view.findViewById(R.id.tv_bird_com_name)
         tvBirdSciName = view.findViewById(R.id.tv_bird_sci_name)
@@ -168,6 +162,7 @@ class ObservationListDialogFragment(private val tripId: String?) : DialogFragmen
                                     val birdImage = obsr.child("birdImage").getValue(String::class.java)
                                     val birdComName = obsr.child("birdComName").getValue(String::class.java)
                                     val birdSciName = obsr.child("birdSciName").getValue(String::class.java)
+                                    recording = obsr.child("recording").getValue(String::class.java).toString()
                                     val latitude = obsr.child("latitude").getValue(String::class.java)
                                     val longitude = obsr.child("longitude").getValue(String::class.java)
                                     val dateAdded = obsr.child("dateAdded").getValue(String::class.java)

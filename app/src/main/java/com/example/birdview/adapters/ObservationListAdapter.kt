@@ -81,7 +81,7 @@ class ObservationListAdapter(private val observationList : ArrayList<Observation
 
     class ObservationViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
 
-        val birdImage : ShapeableImageView = itemView.findViewById(R.id.imgProfilePicture)
+        val birdImage : ShapeableImageView = itemView.findViewById(R.id.img_bird)
         val birdComName : TextView = itemView.findViewById(R.id.tv_bird_com_name)
         val birdSciName : TextView = itemView.findViewById(R.id.tv_bird_sci_name)
         val birdDateAdded : TextView = itemView.findViewById(R.id.tv_bird_date_added)

@@ -45,7 +45,7 @@ class BirdAddDialogFragment(private val tripId: String?) : BottomSheetDialogFrag
         val tv_com_name = view.findViewById<TextView>(R.id.tv_bird_com_name)
         val btnOK = view.findViewById<Button>(R.id.btnOk)
         val btnCancel = view.findViewById<Button>(R.id.btnCancel)
-        image_bird = view.findViewById<ImageView>(R.id.imgProfilePicture)
+        image_bird = view.findViewById<ImageView>(R.id.img_bird)
 
         Glide.with(image_bird.context)
             .load(url)
