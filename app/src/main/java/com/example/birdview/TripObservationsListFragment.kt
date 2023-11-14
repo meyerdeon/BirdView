@@ -62,7 +62,7 @@ class TripObservationsListFragment(private val obsvCount: Int, private val speci
 
         //Add sighting to trip card
         btnAddSigthing.setOnClickListener {
-            replaceFragment( BirdListDialogFragment(parentFragmentManager, tripId), null)
+            replaceFragment( AddSightingFragment(parentFragmentManager, tripId), null)
         }
         return View
     }
