@@ -90,7 +90,7 @@ class SettingsFragment : Fragment() {
                 }
 
                 else{
-                    Toast.makeText(context, "User data retrieval failed.", Toast.LENGTH_SHORT).show()
+
                 }
             }.addOnCompleteListener(){
 
