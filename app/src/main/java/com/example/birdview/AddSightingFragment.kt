@@ -142,7 +142,7 @@ class AddSightingFragment(private val fragmentManager : FragmentManager, private
                 }
             }
             } else {
-                Toast.makeText(context, "Cannot get  location.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Cannot get your location.", Toast.LENGTH_SHORT).show()
             }
         }
     }
