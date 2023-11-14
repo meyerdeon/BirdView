@@ -1,14 +1,18 @@
 package com.example.birdview
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.location.Address
 import android.location.Geocoder
+import android.media.AudioAttributes
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -16,8 +20,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
+import com.example.birdview.databinding.FragmentObservationListDialogBinding
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import org.w3c.dom.Text
 import java.io.IOException
 import java.util.Locale
 
@@ -26,6 +35,8 @@ class ObservationListDialogFragment(private val tripId: String?) : DialogFragmen
 
     private lateinit var lytInfo : LinearLayout
     private lateinit var imgShare : ImageView
+    private lateinit var btnPlayAudio : Button
+    private lateinit var recording : String
     private lateinit var imgBird : ImageView
     private lateinit var prgLoad : ProgressBar
     private lateinit var tvBirdDateAdded : TextView
@@ -34,6 +45,7 @@ class ObservationListDialogFragment(private val tripId: String?) : DialogFragmen
     private lateinit var tvBirdLongitudeLatitude : TextView
     private lateinit var tvBirdSpecifiedLocation : TextView
     private lateinit var imgclose : ImageView
+    private lateinit var mediaPlayer: MediaPlayer
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,6 +53,47 @@ class ObservationListDialogFragment(private val tripId: String?) : DialogFragmen
         lytInfo.visibility = View.GONE
         imgShare.visibility = View.GONE
         imgclose.visibility = View.GONE
+        mediaPlayer = MediaPlayer()
+    }
+
+    private fun stopAndPlay(audioUrl: String) {
+
+        // Set audio attributes
+        mediaPlayer.setAudioAttributes(
+            AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build()
+        )
+
+        // Set an error listener to handle any errors during preparation
+        mediaPlayer.setOnErrorListener { mp, what, extra ->
+            Toast.makeText(context, "Please note the media player is still preparing.", Toast.LENGTH_SHORT).show()
+            false
+        }
+
+        // Set a prepared listener to start playback when prepared
+        mediaPlayer.setOnPreparedListener {
+            mediaPlayer.start()
+        }
+
+        // Set a completion listener to reset the MediaPlayer when playback completes
+        mediaPlayer.setOnCompletionListener {
+            mediaPlayer.reset()
+            btnPlayAudio.text = "Play Audio"
+        }
+
+        // Set the data source and prepare asynchronously
+        try {
+            mediaPlayer.setDataSource(audioUrl)
+            mediaPlayer.prepareAsync()
+        } catch (e: Exception) {
+            // Handle any exceptions during preparation
+            btnPlayAudio.text = "Play Audio"
+            mediaPlayer.reset()
+            Toast.makeText(context, "An error has occur. Error: ${e}", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
+        }
     }
 
     override fun onCreateView(
@@ -55,6 +108,7 @@ class ObservationListDialogFragment(private val tripId: String?) : DialogFragmen
 
         lytInfo = view.findViewById(R.id.lytInfo)
         imgShare = view.findViewById(R.id.img_share)
+        btnPlayAudio = view.findViewById(R.id.btn_play_audio)
         prgLoad = view.findViewById(R.id.prgLoad)
         imgBird = view.findViewById(R.id.imgProfilePicture)
         tvBirdDateAdded = view.findViewById(R.id.tv_bird_date_added)
@@ -65,6 +119,29 @@ class ObservationListDialogFragment(private val tripId: String?) : DialogFragmen
         imgclose = view.findViewById<ImageView>(R.id.img_close)
         imgclose.setOnClickListener(){
             dismiss()
+        }
+
+        btnPlayAudio.setOnClickListener(){
+            //  previousViewHolder?.let { notifyItemChanged(it.adapterPosition) }
+            if(btnPlayAudio.text.equals("Play Audio")){
+                btnPlayAudio.setText("Stop Audio")
+                // Create a new MediaPlayer for the current item
+
+                // Create a new MediaPlayer for the current item
+                if (mediaPlayer.isPlaying) {
+                    mediaPlayer.stop()
+                    mediaPlayer.reset()
+
+                }
+                stopAndPlay(recording)
+            }
+            else{
+                if(btnPlayAudio.text.equals("Stop Audio")){
+                    mediaPlayer.stop()
+                    mediaPlayer.reset()
+                    btnPlayAudio.setText("Play Audio")
+                }
+            }
         }
 
         val id = arguments?.getString("id")
@@ -166,21 +243,22 @@ class ObservationListDialogFragment(private val tripId: String?) : DialogFragmen
                                 //https://stackoverflow.com/users/209103/frank-van-puffelen
                                 val obsId = obsr.key
 
-                                if (obsId?.lowercase().equals(id.lowercase())) {
-                                    val birdImage = obsr.child("birdImage").getValue(String::class.java)
-                                    val birdComName = obsr.child("birdComName").getValue(String::class.java)
-                                    val birdSciName = obsr.child("birdSciName").getValue(String::class.java)
-                                    val latitude = obsr.child("latitude").getValue(String::class.java)
-                                    val longitude = obsr.child("longitude").getValue(String::class.java)
-                                    val dateAdded = obsr.child("dateAdded").getValue(String::class.java)
-                                    if(birdImage?.contains("https://")!!){
-                                        Glide.with(imgBird.context)
-                                            .load(birdImage)
-                                            .into(imgBird)
-                                    }
-                                    else{
-                                        val image = GlobalMethods.decodeImage(birdImage)
-                                        imgBird.setImageBitmap(image)
+                            if (obsId?.lowercase().equals(id.lowercase())) {
+                                val birdImage = obsr.child("birdImage").getValue(String::class.java)
+                                val birdComName = obsr.child("birdComName").getValue(String::class.java)
+                                val birdSciName = obsr.child("birdSciName").getValue(String::class.java)
+                                recording = obsr.child("recording").getValue(String::class.java).toString()
+                                val latitude = obsr.child("latitude").getValue(String::class.java)
+                                val longitude = obsr.child("longitude").getValue(String::class.java)
+                                val dateAdded = obsr.child("dateAdded").getValue(String::class.java)
+                                if(birdImage?.contains("https://")!!){
+                                    Glide.with(imgBird.context)
+                                        .load(birdImage)
+                                        .into(imgBird)
+                                }
+                                else{
+                                    val image = GlobalMethods.decodeImage(birdImage)
+                                    imgBird.setImageBitmap(image)
 
                                     }
                                     tvBirdComName.text = "You have seen " + birdComName
@@ -262,5 +340,12 @@ class ObservationListDialogFragment(private val tripId: String?) : DialogFragmen
             val height = ViewGroup.LayoutParams.MATCH_PARENT
             dialog.window?.setLayout(width, height)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        // Release MediaPlayer when the fragment is being destroyed
+        mediaPlayer.release()
     }
 }
