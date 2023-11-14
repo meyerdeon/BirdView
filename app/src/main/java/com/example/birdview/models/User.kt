@@ -4,5 +4,6 @@ package com.example.birdview.models
 //the following code was taken from Android Developer and adapted
 //https://developer.android.com/codelabs/basic-android-kotlin-training-lists#2
 //Android Developer
-data class User(var email : String? = null, var name : String? = null, var signUpDate : String? = null)
+data class User(var email : String? = null, var name : String? = null,
+                var signUpDate : String? = null, var profilePicture: String? = null)
 

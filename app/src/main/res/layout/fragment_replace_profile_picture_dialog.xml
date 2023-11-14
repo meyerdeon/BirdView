@@ -1,28 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".UnidentifiedDialogFragment">
-<!--    <RelativeLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent">-->
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:backgroundTint="@color/white"
+    android:background="@drawable/bg_directions_bottom_sheet_layout">
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="40dp"
-            android:id="@+id/imgProfilePicture"
-            android:background="@drawable/ic_manual_bird_sighting_entry"/>
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/view_bg_circular_bg">
 
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+
+                android:id="@+id/imgProfilePicture"
+                app:civ_border_width="2dp"
+                app:civ_border_color="@color/light_grey1"
+                android:backgroundTint="@color/light_grey1"
+                android:background="@drawable/ic_default_pp"/>
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit your profile photo"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/dark_grey"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="20sp"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,6 +62,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Take Picture"
+                    android:textColor="@color/dark_grey"
                     android:textSize="16dp"/>
             </LinearLayout>
 
@@ -64,12 +81,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Upload Image"
+                    android:textColor="@color/dark_grey"
                     android:textSize="16dp"/>
             </LinearLayout>
         </LinearLayout>
 
 
-        <!-- Add other UI elements as needed -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -77,12 +94,12 @@
             android:layout_gravity="center"
             android:gravity="center">
             <Button
-                android:id="@+id/btnOk"
-                android:layout_marginRight="40dp"
+                android:id="@+id/btnUpload"
+                android:layout_marginRight="12dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20dp"
-                android:text="OK"
+                android:textSize="16dp"
+                android:text="Upload"
                 android:background="@android:color/transparent"
                 android:textColor="@color/blue_1"/>
 
@@ -90,14 +107,12 @@
                 android:id="@+id/btnCancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20dp"
-                android:text="Cancel"
                 android:background="@android:color/transparent"
-                android:textColor="@color/blue_1"/>
+                android:text="Cancel"
+                android:textColor="@color/blue_1"
+                android:textSize="16dp" />
         </LinearLayout>
 
     </LinearLayout>
 
-<!--    </RelativeLayout>-->
-
-</FrameLayout>
+</LinearLayout>

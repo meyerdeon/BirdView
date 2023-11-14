@@ -21,18 +21,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import com.example.birdview.databinding.ActivitySignInBinding
-import com.example.birdview.databinding.FragmentBirdManualEntryDialogBinding
-import com.example.birdview.databinding.FragmentObservationListDialogBinding
-import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import org.w3c.dom.Text
 import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -73,7 +67,7 @@ class BirdManualEntryDialogFragment(private val latitude : String, private val l
         val btnCancel = view.findViewById<Button>(R.id.btnCancel)
         val et_com_name = view.findViewById<EditText>(R.id.etComName)
         val et_sci_name = view.findViewById<EditText>(R.id.etSciName)
-        image_bird = view.findViewById<ImageView>(R.id.img_bird)
+        image_bird = view.findViewById<ImageView>(R.id.imgProfilePicture)
 
         btnCancel.setOnClickListener{
             dismiss()

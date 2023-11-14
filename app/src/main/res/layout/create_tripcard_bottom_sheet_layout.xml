@@ -15,7 +15,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="30dp"
-            android:id="@+id/img_bird"
+            android:id="@+id/imgProfilePicture"
             android:background="@drawable/ic_manual_bird_sighting_entry"/>
 
 

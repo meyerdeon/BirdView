@@ -1,25 +1,19 @@
 package com.example.birdview.adapters
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.birdview.BirdListDialogFragment
 import com.example.birdview.GlobalMethods
 import com.example.birdview.Observation
 import com.example.birdview.ObservationListDialogFragment
 import com.example.birdview.R
-import com.example.birdview.SingleObservationFragment
 import com.google.android.material.imageview.ShapeableImageView
 
 class ObservationListAdapter(private val observationList : ArrayList<Observation>, private val task: Int, private val tripId: String?) : RecyclerView.Adapter<ObservationListAdapter.ObservationViewHolder>() {
@@ -87,7 +81,7 @@ class ObservationListAdapter(private val observationList : ArrayList<Observation
 
     class ObservationViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
 
-        val birdImage : ShapeableImageView = itemView.findViewById(R.id.img_bird)
+        val birdImage : ShapeableImageView = itemView.findViewById(R.id.imgProfilePicture)
         val birdComName : TextView = itemView.findViewById(R.id.tv_bird_com_name)
         val birdSciName : TextView = itemView.findViewById(R.id.tv_bird_sci_name)
         val birdDateAdded : TextView = itemView.findViewById(R.id.tv_bird_date_added)

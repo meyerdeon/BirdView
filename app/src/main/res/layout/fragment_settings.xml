@@ -31,52 +31,65 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center_vertical"
-            android:id="@+id/lytInfo"
-            android:orientation="horizontal">
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgUserPP"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                app:civ_border_color="@color/light_grey"
-                app:civ_border_width="2dp"
-                android:layout_gravity="start"
-                android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:background="@color/blue_2"
+            android:orientation="vertical">
 
-                android:backgroundTint="@color/light_grey"
-                android:src="@drawable/ic_default_pp"/>
-            />
-            <TextView
-                android:id="@+id/txtUsername"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Hello User!"
-                android:fontFamily="@font/poppins_medium"
-                android:textSize="20sp"
-                android:layout_marginLeft="10dp"/>
-        </LinearLayout>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
+                android:id="@+id/lytInfo"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/view_bg_circular_bg">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imgUserPP"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:backgroundTint="@color/light_grey"
+                    android:src="@drawable/ic_default_pp"/>
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/txtUsername"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/poppins_medium"
+                    android:textSize="20sp"
+                    android:layout_marginLeft="10dp"/>
+            </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnEditPP"
-            android:layout_width="80dp"
-            android:layout_height="25dp"
-            android:backgroundTint="@color/light_grey"
-            android:text="Edit"
-            android:textSize="18sp"
-            android:textAllCaps="false"
-            android:textColor="@color/font_grey2"
-            android:padding="0dp"
-            android:background="@drawable/view_bg_text_bg"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
-            />
+            <!--<androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnEditPP"
+                android:layout_width="80dp"
+                android:layout_height="25dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="@color/blue_4"
+                android:text="Edit"
+                android:textSize="18sp"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:padding="0dp"
+                android:background="@drawable/view_bg_text_bg"
+                android:layout_marginLeft="5dp"
+
+                />-->
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:layout_marginHorizontal="2dp"
             android:background="@drawable/settings_bkg">
 

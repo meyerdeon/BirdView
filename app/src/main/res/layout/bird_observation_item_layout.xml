@@ -29,7 +29,7 @@
                 <com.google.android.material.imageview.ShapeableImageView
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:id="@+id/img_bird"
+                    android:id="@+id/imgProfilePicture"
                     android:scaleType="fitXY"
                     app:shapeAppearanceOverlay="@style/RoundedSquare"
                     app:strokeColor="@color/blue"

@@ -57,7 +57,7 @@ class UnidentifiedDialogFragment(private val latitude : String, private val long
         val imgUploadImage = view.findViewById<LinearLayout>(R.id.lyt_upload_image)
         val btnOK = view.findViewById<Button>(R.id.btnOk)
         val btnCancel = view.findViewById<Button>(R.id.btnCancel)
-        image_bird = view.findViewById<ImageView>(R.id.img_bird)
+        image_bird = view.findViewById<ImageView>(R.id.imgProfilePicture)
 
         btnCancel.setOnClickListener{
             dismiss()

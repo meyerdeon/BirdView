@@ -16,13 +16,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
-import com.example.birdview.databinding.FragmentObservationListDialogBinding
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import org.w3c.dom.Text
 import java.io.IOException
 import java.util.Locale
 
@@ -61,7 +56,7 @@ class ObservationListDialogFragment(private val tripId: String?) : DialogFragmen
         lytInfo = view.findViewById(R.id.lytInfo)
         imgShare = view.findViewById(R.id.img_share)
         prgLoad = view.findViewById(R.id.prgLoad)
-        imgBird = view.findViewById(R.id.img_bird)
+        imgBird = view.findViewById(R.id.imgProfilePicture)
         tvBirdDateAdded = view.findViewById(R.id.tv_bird_date_added)
         tvBirdComName = view.findViewById(R.id.tv_bird_com_name)
         tvBirdSciName = view.findViewById(R.id.tv_bird_sci_name)
