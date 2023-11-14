@@ -151,7 +151,7 @@
                         <Chronometer
                             android:id="@+id/chronometerObservationElapsed"
                             android:gravity="center"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/grey_1"/>
@@ -165,7 +165,7 @@
                             android:textColor="@color/grey_1"
                             android:id="@+id/chronometerObservationDuration"
                             android:gravity="center"
-                            android:textSize="18sp"
+                            android:textSize="16sp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
                     </LinearLayout>
@@ -178,13 +178,15 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="10dp"
-                        android:background="@drawable/shape_button_rounded"
+                        android:drawableStart="@drawable/record_sound_icon"
+                        android:background="@drawable/view_bg_text_bg2"
+                        android:backgroundTint="@color/white"
                         android:fontFamily="@font/poppins_medium"
-                        android:padding="8dp"
+                        android:padding="5dp"
                         android:text="Play Audio"
                         android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="20sp" />
+                        android:textColor="@color/new_grey"
+                        android:textSize="18sp" />
                 </LinearLayout>
 
                 <FrameLayout
