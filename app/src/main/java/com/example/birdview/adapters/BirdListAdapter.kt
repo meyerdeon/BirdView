@@ -39,6 +39,8 @@ class BirdListAdapter(private val birds: List<BirdWithImage>, private val latitu
 
     private fun stopAndPlay(audioUrl: String, context: Context) {
 
+        try
+        {
         // Set audio attributes
         mediaPlayer.setAudioAttributes(
             AudioAttributes.Builder()
@@ -49,10 +51,14 @@ class BirdListAdapter(private val birds: List<BirdWithImage>, private val latitu
 
         // Set an error listener to handle any errors during preparation
         mediaPlayer.setOnErrorListener { mp, what, extra ->
-            if(previousViewHolder!=null){
+            if (previousViewHolder != null) {
                 previousViewHolder!!.playAudio.setText("Play Audio")
             }
-            Toast.makeText(context, "Please note the media player is still preparing.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                "Please note the media player is still preparing.",
+                Toast.LENGTH_SHORT
+            ).show()
             false
         }
 
@@ -68,9 +74,8 @@ class BirdListAdapter(private val birds: List<BirdWithImage>, private val latitu
         }
 
         // Set the data source and prepare asynchronously
-        try {
-            mediaPlayer.setDataSource(audioUrl)
-            mediaPlayer.prepareAsync()
+        mediaPlayer.setDataSource(audioUrl)
+        mediaPlayer.prepareAsync()
         } catch (e: Exception) {
             // Handle any exceptions during preparation
             if(previousViewHolder!=null){
@@ -126,7 +131,6 @@ class BirdListAdapter(private val birds: List<BirdWithImage>, private val latitu
                 currentViewHolder = holder
                 //  previousViewHolder?.let { notifyItemChanged(it.adapterPosition) }
                 if(holder.playAudio.text.equals("Play Audio")){
-                    holder.playAudio.setText("Stop Audio")
 
                     if (mediaPlayer.isPlaying) {
                         mediaPlayer.stop()
@@ -135,7 +139,13 @@ class BirdListAdapter(private val birds: List<BirdWithImage>, private val latitu
                             previousViewHolder!!.playAudio.setText("Play Audio")
                         }
                     }
-                    stopAndPlay(bird.recording!!, it.context)
+                    if(bird.recording!=null){
+                        holder.playAudio.setText("Stop Audio")
+                        stopAndPlay(bird.recording!!, it.context)
+                    }
+                    else{
+                        Toast.makeText(it.context, "No audio found", Toast.LENGTH_SHORT).show()
+                    }
                 }
                 else{
                     if(holder.playAudio.text.equals("Stop Audio")){

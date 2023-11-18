@@ -84,7 +84,7 @@
                 android:layout_marginStart="10dp"
                 android:elevation="20dp"
                 android:layout_marginEnd="15dp"
-                android:layout_marginTop="95dp"
+                android:layout_marginTop="110dp"
                 android:drawableStart="@drawable/record_sound_icon"
                 android:background="@drawable/view_bg_text_bg2"
                 android:backgroundTint="@color/white"

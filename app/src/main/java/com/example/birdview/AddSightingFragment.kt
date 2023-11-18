@@ -36,6 +36,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -131,11 +132,11 @@ class AddSightingFragment(private val fragmentManager : FragmentManager, private
             location.addOnSuccessListener {
                 if (it != null) {
                     val currentLatLng = LatLng(it.latitude, it.longitude)
-                    Toast.makeText(
-                        context,
-                        it.latitude.toString() + it.longitude.toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
+//                    Toast.makeText(
+//                        context,
+//                        it.latitude.toString() + it.longitude.toString(),
+//                        Toast.LENGTH_SHORT
+//                    ).show()
                     findBirds(it.latitude, it.longitude)
                     //       placeMarkerOnMap(currentLatLng)
                     //     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15F))
@@ -299,13 +300,17 @@ class AddSightingFragment(private val fragmentManager : FragmentManager, private
                             Unit
                         } else {
                             // Handle Flickr API error
-                            Toast.makeText(context, "Error: ${response.code()}", Toast.LENGTH_SHORT).show()
+                            withContext(Dispatchers.Main){
+                                Toast.makeText(context, "Error: ${response.code()}", Toast.LENGTH_SHORT).show()
+                            }
                             // Return the error as an exception
                             throw RuntimeException("Flickr API error: ${response.code()}")
                         }
                     } catch (t: Throwable) {
+                        withContext(Dispatchers.Main){
+                            Toast.makeText(context, "Network error: ${t.message}", Toast.LENGTH_SHORT).show()
+                        }
                         // Handle network error
-                        Toast.makeText(context, "Network Error: ${t.message}", Toast.LENGTH_SHORT).show()
                         // Return the error as an exception
                         throw t
                     }
@@ -319,8 +324,10 @@ class AddSightingFragment(private val fragmentManager : FragmentManager, private
 
                 // Check for any errors
                 if (deferredList.any { it.isCompleted && it.getCompleted() is Throwable }) {
+                    withContext(Dispatchers.Main){
+                        Toast.makeText(context, "Some requests failed", Toast.LENGTH_SHORT).show()
+                    }
                     // Handle errors if needed
-                    Toast.makeText(context, "Some requests failed", Toast.LENGTH_SHORT).show()
                 }
                 searchRecordings(newArrayList, latitude, longitude)
 //            getRecordings(newArrayList)
@@ -363,29 +370,35 @@ class AddSightingFragment(private val fragmentManager : FragmentManager, private
                                     // Assuming you want to use the first recording URL
                                     newArrayList[i].recording = recordings!!.recordings[0].file
                                 } else {
-                                    Toast.makeText(
-                                        context,
-                                        "No recordings found for the specified bird.",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    withContext(Dispatchers.Main){
+                                        Toast.makeText(
+                                            context,
+                                            "No recording found for the specified bird - ${newArrayList[i].sciName}.",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                                 }
 
                                 // Return success
                                 Unit
                             } else {
-                                Toast.makeText(
-                                    context,
-                                    "Error ${response.code()}",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                withContext(Dispatchers.Main){
+                                    Toast.makeText(
+                                        context,
+                                        "Error ${response.code()}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                                 // Return the error code
-                                response.code()
+                                throw RuntimeException("Xeno Canto error: ${response.code()}")
                             }
                         } catch (t: Throwable) {
-                            Toast.makeText(context, " Error ${t.message}", Toast.LENGTH_SHORT)
-                                .show()
+                            withContext(Dispatchers.Main){
+                                Toast.makeText(context, "Network error ${t.message}", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
                             // Return the exception
-                            t
+                            throw t
                         }
                     }
 
@@ -399,8 +412,10 @@ class AddSightingFragment(private val fragmentManager : FragmentManager, private
 
                 // Check for any errors
                 if (deferredList.any { it.isCompleted && it.getCompleted() is Throwable }) {
+                    withContext(Dispatchers.Main){
+                        Toast.makeText(context, "Some requests failed", Toast.LENGTH_SHORT).show()
+                    }
                     // Handle errors if needed
-                    Toast.makeText(context, "Some requests failed", Toast.LENGTH_SHORT).show()
                 }
 
                 // All requests completed (with or without errors)

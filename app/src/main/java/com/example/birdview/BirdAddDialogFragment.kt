@@ -88,11 +88,15 @@ class BirdAddDialogFragment(private val tripId: String?) : BottomSheetDialogFrag
                         else{
                             Toast.makeText(context, "User data retrieval failed.", Toast.LENGTH_SHORT).show()
                         }
-                    }.addOnCompleteListener(){
-                        dismiss()
                     }.addOnFailureListener(){
                         Toast.makeText(context, "Failure", Toast.LENGTH_SHORT).show()
                     }
+                    databaseReference.child(user?.uid.toString()).child("observations").push()
+                        .setValue(obs).addOnCompleteListener() {
+                            dismiss()
+                        }.addOnFailureListener() {
+                            Toast.makeText(context, "Failure", Toast.LENGTH_SHORT).show()
+                        }
                 }else{
                     databaseReference.child(user?.uid.toString()).child("observations").push().setValue(obs).addOnCompleteListener() {
                         if (it.isComplete){

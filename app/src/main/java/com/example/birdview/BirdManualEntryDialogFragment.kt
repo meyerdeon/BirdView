@@ -223,7 +223,12 @@ class BirdManualEntryDialogFragment(private val latitude : String, private val l
                                                                 Toast.LENGTH_SHORT
                                                             ).show()
                                                         }
-                                                    }.addOnCompleteListener() {
+                                                    }.addOnFailureListener() {
+                                                        Toast.makeText(context, "Failure", Toast.LENGTH_SHORT).show()
+                                                    }
+
+                                                databaseReference.child(user?.uid.toString()).child("observations").push()
+                                                    .setValue(obs).addOnCompleteListener() {
                                                         dismiss()
                                                     }.addOnFailureListener() {
                                                         Toast.makeText(context, "Failure", Toast.LENGTH_SHORT).show()
