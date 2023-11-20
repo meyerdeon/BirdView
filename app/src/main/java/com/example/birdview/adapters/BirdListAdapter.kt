@@ -144,7 +144,7 @@ class BirdListAdapter(private val birds: List<BirdWithImage>, private val latitu
                         stopAndPlay(bird.recording!!, it.context)
                     }
                     else{
-                        Toast.makeText(it.context, "No auifound", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(it.context, "No aifound", Toast.LENGTH_SHORT).show()
                     }
                 }
                 else{
