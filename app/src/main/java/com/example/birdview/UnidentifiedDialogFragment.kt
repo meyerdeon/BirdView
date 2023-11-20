@@ -588,7 +588,7 @@ class UnidentifiedDialogFragment(private val latitude : String, private val long
 
                     }
                     mediaPlayer?.setOnErrorListener { mp, what, extra ->
-                        Toast.makeText(context, "Please note the media player is still preparing.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Please note the media player is still preparing or a network error has occurred.", Toast.LENGTH_SHORT).show()
                         false
                     }
 

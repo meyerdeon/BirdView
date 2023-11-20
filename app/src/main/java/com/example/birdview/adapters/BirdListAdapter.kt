@@ -56,7 +56,7 @@ class BirdListAdapter(private val birds: List<BirdWithImage>, private val latitu
             }
             Toast.makeText(
                 context,
-                "Please note the media player is still preparing.",
+                "Please note the media player is still preparing or a network error has occurred.",
                 Toast.LENGTH_SHORT
             ).show()
             false
